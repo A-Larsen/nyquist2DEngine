@@ -1,0 +1,54 @@
+= NYQUIST 2D ENGINE API
+:docinfo: shared
+:source-highlighter: pygments
+:pygments-style: monokai
+:toc: left
+
+== Lookup
+=== Search `nyq` table
+[%header, cols="1,1"]
+|===
+| Table  | Description
+| https://nyquist2dengine.com/api-global.html[global] | global 
+| https://nyquist2dengine.com/api-graphics.html[graphics] | draw graphics to backbuffer and more
+| https://nyquist2dengine.com/api-events.html[events] | get keyboard or gamepad input
+| https://nyquist2dengine.com/api-text.html[text] | draw simple text
+| https://nyquist2dengine.com/api-image.html[image] | draw simple png images
+| https://nyquist2dengine.com/api-database.html[database] | interact with database
+|===
+
+== Getting started
+
+Bellow is very trival game. This is almost the bare minimum you can do with the
+engine. Hopefully it can help you get started!
+
+.draw a red circle and displays it onto the screen for one second
+[source, lua]
+----
+nyq.init("one", {x = 400, y = 100}, {w = 800, h = 800})
+nyq.graphics.setColor({r = 255, g = 0, b = 0, a = 0})
+nyq.graphics.drawCircle({x = 200, y = 200}, 100 --[[radius]])
+nyq.graphics.update()
+nyq.delay(1000)
+----
+
+== How it works
+The Nyquist 2D Engine API exists entirely in the lua table `nyq`. All the
+methods and variables you need to make a game are contained in there. There are
+different tables within this table that are classified by graphics, events, etc.
+"Global" is use to define any function or variable that is the direct child of
+`nyq`. You must first initialize the engine with `nyq.init()`. This creates a
+window and initializes events (keyboard or gamepad). Loops must be used to keep
+the window opened. `nyq.quit` is always false unless you close the window. A
+typical loop could loop something like this:
+
+[source, lua]
+----
+while not nyq.quit do
+-- do some things
+end
+----
+
+All game related things should be kept within a while loop like this. You will
+need to keep updating things withing the loop to continue the functionality of
+the game.

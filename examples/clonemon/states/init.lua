@@ -1,0 +1,9 @@
+states = {}
+states.battle =        require("./states/battle")
+states.world =         require("./states/world")
+states.choice_select = require("./states/choice_select")
+states.start =         require("./states/start")
+states.loadsave = require("./states/loadsave")
+states.enter_text = require("./states/enter_text")
+states.bag = require("./states/bag")
+states.party = require("./states/party")

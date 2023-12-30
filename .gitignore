@@ -1,0 +1,14 @@
+/nyquist2DEngine
+/mapeditor
+.res/data/*
+.res/*.db
+debug
+*.exe
+*.obj
+*.ilk
+*.pdb
+docs/*.html
+!docs/docinfo.html
+core
+**/.db
+.cache/*

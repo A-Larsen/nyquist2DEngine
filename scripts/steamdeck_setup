@@ -1,0 +1,14 @@
+#!/usr/bin/sh
+sudo steamos-readonly disable
+rm -rf /etc/ld.so.conf.d/fakeroot.conf
+sudo pacman -S fakeroot
+sudo pacman -S lua53
+sudo pacman -S sdl2
+sudo pacman -S sdl2_ttf
+sudo pacman -S util-linux-libs
+sudo pacman -S base-devel
+sudo pacman -S linux-headers
+sudo pacman -S gcc
+sudo pacman -S make
+sudo pacman -Syu
+# could quite possible have to use this command

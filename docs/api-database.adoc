@@ -1,0 +1,117 @@
+= NYQUIST 2D ENGINE API
+:docinfo: shared
+:toc: left
+:source-highlighter: pygments
+:pygments-style: monokai
+:icons: font
+:stem:
+
+== nyq.database
+
+NOTE: There is a diffference between a database table and a table. A table is
+      just the tables used in lua. A database table is an abstraction for the
+      layout of your data in the database.
+
+=== *init(database, schema)*
+Initializes the database.
+
+parameters:: 
+* `database` [.api-type]#string# name of database file in '_.res_'
+* `schema` [.api-type]#table# 
+
+The `schema` table is a schema that is used to create the tables that will be
+used in the database. It can be any size. The construction of the `schema`
+table needs to follow a specific format.
+
+----
+{
+    <string> = {
+        <key> = <value> ...
+    } ...
+}
+----
+
+The first level members of the `schema` table should be table(s) that can be
+indexed by a string. This index needs to be a key that will be a name for the
+database table (and lua table as well, somewhat confusing I suppose). The table
+should have any length of key value pairs that follow the `<key> = <value>`
+convention. You can have any length of these key value pairs. The available
+values for `value` are `DB_INTEGER` and `DB_TEXT`. Don't put any other values.
+
+`init()` will create the table(s) in the sqlite database from `schema` if they
+do not exist, otherwise it will just ignore the table if a table has the same
+name as a table in the sqlite database. Make sure to remove conflicting tables
+in your sqlite database.
+
+=== *insert(table, key_value_pairs)*
+This will insert data into the a database table that was created with
+`init()`. It must follow the format you created in the `schema` table.
+
+For example if you created a "things" table in your schema with one key value
+pair of `id = DB_INTEGER`, then you could insert data like this:
+
+[source, lua]
+----
+nyq.database.init("test.db", {
+    things = {
+        id = DB_INTEGER,
+    }
+});
+nyq.database.insert("things",  {id = 44})
+----
+
+If the key value pair was `id = DB_TEXT` instead then it might look like this:
+
+[source, lua]
+----
+nyq.database.init("test.db", {
+    things = {
+        id = DB_TEXT,
+    }
+});
+nyq.database.insert("things",  {id = "car"})
+----
+
+If you have more than one key value pair in the table created in your schema,
+you could insert data like this:
+
+[source, lua]
+----
+nyq.database.init("test.db", {
+    things = {
+        id = DB_INTEGER,
+        type = DB_TEXT
+    }
+});
+nyq.database.insert("things",  {id = 12, type="car"})
+----
+
+Just make sure that you use the same keys from the database schema, and to not
+to leave any out.
+
+WARNING: If you use the insert function without branching (using conditions)
+         then you will keep inserting this data everytime the program is run.
+         This will lead to redundency.
+
+=== Example
+
+.create a database with 3 tables and insert data
+[source, lua]
+----
+nyq.database.init("test.db", {
+    people = {
+        id = DB_INTEGER,
+        name = DB_TEXT,
+        age = DB_INTEGER
+    },
+    things = {
+        id = DB_INTEGER,
+        type = DB_TEXT
+    },
+    Lizards = {
+        color = DB_TEXT,
+        size = DB_INTEGER
+    }
+});
+nyq.database.insert("people",  {id = 44,  name = "nice",  age = 88})
+----

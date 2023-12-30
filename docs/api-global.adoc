@@ -1,0 +1,32 @@
+= NYQUIST 2D ENGINE API
+:docinfo: shared
+:toc: left
+:source-highlighter: pygments
+:pygments-style: monokai
+:icons: font
+:stem:
+
+== nyq
+
+=== *init(window_name, pos, size)*
+Initialize a new window with the name `window_name` to the position of `pos` and
+the size of `size`.
+
+parameters::
+* `name` [.api-type]#string#
+* `pos` [.api-type]#table#
+** `x` [.api-type]#number# x position of window
+** `y` [.api-type]#number# y position of window
+* `size` [.api-type]#table#
+** `w` [.api-type]#number# width of window 
+** `h` [.api-type]#number# height of window
+
+=== *delay(time)*
+Delays the program for `time` miliseconds. Useful for making sure that your
+grpahics update with the refresh rate or for slowing down your game operations
+so they are slower then the rate the graphics are being updated.
+
+=== *update()*
+Updates the the renderer, and other important utilities for the engine. This
+renders every update from the `nyq` lower tables (nyq.events, nyq.text, etc) to
+the window

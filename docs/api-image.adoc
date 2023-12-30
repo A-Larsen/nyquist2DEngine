@@ -1,0 +1,57 @@
+= NYQUIST 2D ENGINE API
+:docinfo: shared
+:source-highlighter: pygments
+:pygments-style: monokai
+:toc: left
+
+== nyq.image
+
+=== *init()*
+Initializes the image table to be ready to render images.
+
+=== *create(filename, pos, [size]) -> image_id*
+
+parameters:: 
+* `filename` [.api-type]#string# filename of png
+* `pos` [.api-type]#table#
+** `x` [.api-type]#number# x position of image
+** `y` [.api-type]#number# y position of image
+* `size` [.api-type]#table#
+** `w` [.api-type]#number# width of image
+** `h` [.api-type]#number# height of image
+
+return::
+* `image_id` [.api-type]#number#
+
+The returned `image_id` is used to identify the image so that if you need to
+change something about the image, you can use the id to specify the image you
+want. Every time you use `create()` the `image_id` returned is 1 greater than
+the one `image_id` returned by the previous call to `create()`. This should be
+outside of any loops. This does not draw anything to the screen but gets the
+image ready to be drawn. If there is no size table than the size will remain the
+original size of the image.
+
+NOTE: all png images shoule be stored in __.res/images/__
+
+=== *update(image_id, pos)*
+Update the image to be ready to be rendered once `nyq.update()` is called. This
+function can and should be used in a loop. `image_id` should be the same
+`image_id` returned by `create()`.
+
+parameters:: 
+* `image_id` [.api-type]#string# id of the image
+* `pos` [.api-type]#table#
+** `x` [.api-type]#number# x position of image
+** `y` [.api-type]#number# y position of image
+
+=== Example
+
+[source, lua]
+----
+...
+nyq.image.init()
+image1_pos = {x = 0, y = 0}
+image1_id = nyq.image.create("c++.png", image1_pos, {w = 100, h = 100})
+nyq.image.update(image1_id, image1_pos)
+...
+----

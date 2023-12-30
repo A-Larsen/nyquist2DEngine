@@ -1,0 +1,68 @@
+include config.mk
+
+COMPILE_ARGS = \
+	$(WINCFLAGS)\
+	$(WINDEFINES)\
+
+OUTPUT_ARGS = \
+	/Fe"$(OUT).exe"\
+	.\src\nyquist2DEngine.c\
+	/Fo"$(OUT)" $(WINLIBS)
+
+all: options $(OUT) 
+
+options:
+	@ECHO $(OUT) build options:
+	@ECHO ======================
+	@ECHO. VERSION  = $(VERSION)
+	@ECHO. LIBS     = $(WINLIBS)
+	@ECHO. CC       = $(WINCC)
+	@ECHO. DEFINES  = $(WINDEFINES)
+
+build: .\src\N2DE\*.h .\src\nyquist2DEngine.c
+	$(WINCC)\
+	$(COMPILE_ARGS) \
+	$(OUTPUT_ARGS)
+
+build_debug: .\src\N2DE\*.h .\src\nyquist2DEngine.c
+	$(WINCC)\
+	$(COMPILE_ARGS) \
+	$(WINDEBUGFLAGS)\
+	$(OUTPUT_ARGS)
+
+build_mapeditor: ./src/N2DE/*h ./src/mapeditor.c
+	$(WINCC)\
+	$(COMPILE_ARGS)\
+	/Fe"mapeditor.exe"\
+	.\src\mapeditor.c\
+	/Fo"mapeditor" \
+	$(WINLIBS)
+
+build_mapeditor_debug: ./src/N2DE/*h ./src/mapeditor.c
+	$(WINCC)\
+	$(COMPILE_ARGS)\
+	$(WINDEBUGFLAGS)\
+	/Fe"mapeditor.exe"\
+	.\src\mapeditor.c\
+	/Fo"mapeditor" \
+	$(WINLIBS)
+
+
+$(OUT): build
+mapeditor: build_mapeditor
+mapeditor_debug: build_mapeditor_debug
+debug: build_debug
+
+install: all
+	REM install to /usr/share/bin
+
+wipe:
+	IF EXIST "res" (RMDIR /S /Q res)
+
+uninstall:
+	@REM remove from uninstall path
+
+clean:
+	DEL *.exe *.obj *.pdb *.ilk
+
+.PHONY: clean all install $(OUT) debug

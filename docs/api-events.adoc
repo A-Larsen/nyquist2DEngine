@@ -1,0 +1,79 @@
+= NYQUIST 2D ENGINE API
+:docinfo: shared
+:toc: left
+:source-highlighter: pygments
+:pygments-style: monokai
+:icons: font
+:stem:
+
+== nyq.events
+
+=== *init(controls) -> keypress*
+
+parameters:: 
+* `controls` [.api-type]#table#
+** ... variable length
+
+return:: 
+* `keypress` [.api-type]#number#
+** ... variable length
+
+You set the name of each member in the `controls` table like
+
+----
+<name> = <key name>
+----
+
+`name` is a string index that can be any name you want, `key name` must be one
+of the key names specified on the SDL wiki:
+
+https://wiki.libsdl.org/SDL2/SDL_Keycode
+
+This table is used to return another table `keypress`. The `keypress` table
+takes all the names you assigned to a `key name` as a collection of booleans
+members of 'keypress'. Basically `name` is almost like an alias to `key name`. If
+you press down a key of `key name` then it's alias 'name' will be set to true,
+otherwise it is false.
+
+.seeing if a key was pressed and moving a position north
+[source, lua]
+----
+if keypress.move_north then
+    image1_pos.y = image1_pos.y - 1
+end
+----
+
+=== *update(keypress)*
+Updates all events created from inputs.`keydown` be updated with
+udpate the currently pressed key as a boolean. The `keypress` table is the same
+table returned by `init()`.
+
+=== Example
+
+[source, lua]
+----
+...
+keypress = nyq.events.init({
+    start = "Escape",
+    select = "Return",
+    run_or_cancel = "K",
+    bike = "L",
+    move_north = "W",
+    move_east = "D",
+    move_south = "S",
+    move_west = "A",
+    up = "Up",
+    down = "Down",
+    left = "Left",
+    right = "Right"
+})
+
+while not nyq.quit do
+    nyq.events.update(keypress)
+
+    if keypress.move_north then
+        circle_pos.y = circle_pos.y - 1
+    end
+end
+...
+----

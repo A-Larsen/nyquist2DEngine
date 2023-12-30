@@ -1,0 +1,9 @@
+uis = {}
+uis.start = require("./uis/start")
+uis.world = require("./uis/world")
+uis.battle = require("./uis/battle")
+uis.loadsave = require("./uis/loadsave")
+uis.enter_text = require("./uis/enter_text")
+uis.choice_select = require("./uis/choice_select")
+uis.party = require("./uis/party")
+uis.bag = require("./uis/bag")

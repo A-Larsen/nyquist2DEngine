@@ -1,0 +1,3 @@
+== Mapeditor
+=== Object creation limit
+After about 238 objects the mapeditor craashes

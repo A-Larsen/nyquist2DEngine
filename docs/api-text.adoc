@@ -1,0 +1,71 @@
+= NYQUIST 2D ENGINE API
+:docinfo: shared
+:source-highlighter: pygments
+:pygments-style: monokai
+:toc: left
+
+== nyq.text
+
+=== *init(ttf_file, size)*
+Initializes the text table to be ready to render texts.
+
+parameters:: 
+* `ttf_file` [.api-type]#string# filename for ttf
+* `size` [.api-type]#number# size of font
+
+=== *create(message, pos, rgba_foreground, rgba_background) -> text id*
+parameters:: 
+* `message` [.api-type]#string# message to write to screen
+* `pos` [.api-type]#table#
+** `x` [.api-type]#number# x position of text
+** `y` [.api-type]#number# y position of text
+* `rgba_foreground` [.api-type]#table#
+** `r` [.api-type]#number# red value from 0 to 255
+** `g` [.api-type]#number# green value from 0 to 255
+** `b` [.api-type]#number# blue value from 0 to 255
+** `a` [.api-type]#number# alpha channel value from 0 to 255
+* `rgba_background` [.api-type]#table#
+** `r` [.api-type]#number# red value from 0 to 255
+** `g` [.api-type]#number# green value from 0 to 255
+** `b` [.api-type]#number# blue value from 0 to 255
+** `a` [.api-type]#number# alpha channel value from 0 to 255
+
+return::
+* `text_id` [.api-type]#number#
+
+The returned `text id` is used to identify the text so that if you need to
+change something about the text, you can use the id to specify the text you
+want. Every time you use `create()` the `text_id` returned is 1 greater than
+the one `text_id` returned by the previous call to `create()`. This should be
+outside of any loops. This does not draw anything to the screen but gets the
+text ready to be drawn.
+
+NOTE: all ttf files should be stored in __.res/fonts/__
+
+=== *update(text_id, pos)*
+update the text to be ready to be rendered once `nyq.update()` is called. This
+function can and should be used in a loop. `text_id` should be the same
+`text_id` returned by `create()`.
+
+parameters:: 
+* `text_id` [.api-type]#string# id of the text
+* `pos` [.api-type]#table#
+** `x` [.api-type]#number# x position of text
+** `y` [.api-type]#number# y position of text
+
+=== Example
+
+[source, lua]
+----
+...
+nyq.text.init("NotoSansMono-Regular.ttf", 20)
+text1_pos = {x = 0, y = 0}
+text_1_id = nyq.text.create(
+    "hello!", 
+    text1_pos, 
+    {r = 255, g = 255, b = 255, a = 0},
+    {r = 0, g = 0, b = 0, a = 0}
+)
+nyq.text(image1_id, text_pos)
+...
+----

@@ -1,0 +1,384 @@
+= SCRAPS
+:docinfo: shared
+:toc: left
+:source-highlighter: pygments
+:incons: font
+:stem:
+=== building
+
+==== linux
+
+----
+make
+----
+
+==== windows
+
+----
+nmake.exe -f Makefile.win
+----
+
+==== Building Arguments
+
+===== OUT
+
+====== linux
+
+----
+make OUT="<EXE_NAME>"
+----
+
+====== windows
+
+----
+nmake.exe -f OUT="<EXE_NAME>" Makefile.win
+----
+
+=== running
+
+==== linux
+
+----
+./nyquist2DEngine examples/<somefile>.lua
+----
+
+==== windows
+
+----
+.\nyquist2DEngine examples/<somefile>.lua
+----
+
+=== cleaning
+
+==== linux
+
+----
+make clean
+----
+
+====  windows
+
+----
+nmake.exe -f Makefile.win clean
+----
+
+== File Creation
+https://stackoverflow.com/questions/230062/whats-the-best-way-to-check-if-a-file-exists-in-c
+https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectorya
+
+
+== Struct Packing
+https://stackoverflow.com/questions/1537964/visual-c-equivalent-of-gccs-attribute-packed
+https://www.mypurplecrayon.ca/post/c_struct_packing/
+https://stackoverflow.com/questions/21092415/force-c-structure-to-pack-tightly
+https://learn.microsoft.com/en-us/cpp/preprocessor/pack?view=msvc-170
+
+== Makefile
+https://stackoverflow.com/questions/2214575/passing-arguments-to-make-run
+there are goals, recipes, functions, variables
+changing output name
+
+----
+nmake.exe -f .\Makefile.win OUT="debug" debug
+----
+
+----
+make OUT="debug" debug
+----
+
+== Debuging
+=== Windbg
+http://windbg.info/doc/1-common-cmds.html
+
+=== GDB 
+
+enable debuging in vim
+
+[source, vim]
+----
+:packadd termdebug
+:Termdebug
+----
+
+or use a command mapping I set
+
+----
+<leader>Dd
+----
+
+setting a breakpoint in vim
+[source, vim]
+----
+:Break
+----
+
+quick what to run windbg preview
+
+----
+WinDbgX.exe .\debug.exe .\examples\example1.lua
+----
+
+=== 
+
+== Windows compiler
+debuging
+https://learn.microsoft.com/en-us/cpp/build/reference/z7-zi-zi-debug-information-format?view=msvc-17
+
+== BAT files
+https://stackoverflow.com/questions/21033801/checking-if-a-folder-exists-using-a-bat-file
+== API reference
+https://nodejs.org/docs/latest-v19.x/api/console.html
+== asciidoctor
+inline style
+https://docs.asciidoctor.org/asciidoc/latest/text/custom-inline-styles/
+
+----
+[.thing]#what#
+----
+----
+[.thing]
+not inline
+----
+
+Element attributes
+https://docs.asciidoctor.org/asciidoc/latest/attributes/element-attributes/
+
+== CSS
+no scrolling
+https://stackoverflow.com/questions/28411499/disable-scrolling-on-body
+== Links
+https://stackoverflow.com/questions/18478379/how-to-work-with-tables-passed-as-an-argument-to-a-lua-c-function
+https://stackoverflow.com/questions/4306186/structure-padding-and-packing
+http://www.lua.org/manual/5.1/manual.html#lua_pushlightuserdata
+https://github.com/hertogp/lua-capi-examples
+== Lua C API
+
+looping through lua tables. You will need `lua_next`
+http://www.lua.org/manual/5.1/manual.html#lua_next
+
+[source, c]
+----
+ /* table is in the stack at index 't' */
+ lua_pushnil(L);  /* first key */
+ while (lua_next(L, t) != 0) {
+   /* uses 'key' (at index -2) and 'value' (at index -1) */
+   printf("%s - %s\n",
+          lua_typename(L, lua_type(L, -2)),
+          lua_typename(L, lua_type(L, -1)));
+   /* removes 'value'; keeps 'key' for next iteration */
+   lua_pop(L, 1);
+ }
+----
+== SQL
+=== check if a table exists
+https://stackoverflow.com/questions/49568240/c-program-sqlite3-check-if-table-exists
+
+[source, sql]
+----
+sqlite3_stmt *stmt;
+const char *sql = "SELECT 1 FROM sqlite_master where type='table' and name=?";
+
+int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+if (rc != SQLITE_OK) {
+    print("error: ", sqlite3_errmsg(db));
+    return;
+}
+sqlite3_bind_text(stmt, 1, tbl_name, -1, SQLITE_TRANSIENT);
+
+rc = sqlite3_step(stmt);
+bool found;
+if (rc == SQLITE_ROW)
+    found = true;
+else if (rc == SQLITE_DONE)
+    found = false;
+else {
+    print("error: ", sqlite3_errmsg(db));
+    sqlite3_finalize(stmt);
+    return;
+}
+
+sqlite3_finalize(stmt);
+return found;
+----
+
+=== create a table if it does not already exist.
+
+https://stackoverflow.com/questions/1601151/how-do-i-check-in-sqlite-whether-a-table-exists
+
+[source, sql]
+----
+create table if not exists TableName (col1 typ1, ..., colN typN)
+----
+
+[source, sql]
+----
+drop table if exists TableName
+----
+
+selecting from  table if it exists
+
+[source, sql]
+----
+SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';
+----
+
+=== Blobs
+I should probably use a blob for bap data
+https://stackoverflow.com/questions/2607326/insert-a-blob-via-a-sql-script
+
+[source, sql]
+----
+reate table a(id integer, item blob);
+insert into a values(1,'54455354');
+insert into a values(2, RAWTOHEX('Test'));
+select UTF8TOSTRING(item) from a;
+TEST
+Test
+----
+
+inserting blob from file 
+
+[source, sql]
+----
+insert into a values(3, FILE_READ('file.dat'));
+----
+
+writing to a blob
+
+https://www.sqlite.org/c3ref/blob_write.html
+
+[source, c]
+----
+int sqlite3_blob_write(sqlite3_blob *, const void *z, int n, int iOffset);
+----
+
+reading from a blob
+
+https://www.sqlite.org/c3ref/blob_read.html
+
+[source, c]
+----
+int sqlite3_blob_read(sqlite3_blob *, void *Z, int N, int iOffset);
+----
+
+== LUA API
+=== Get length of an object
+
+----
+lua_len
+----
+
+=== Get column names
+https://stackoverflow.com/questions/947215/how-to-get-a-list-of-column-names-on-sqlite3-database
+
+[source, sql]
+----
+SELECT name FROM PRAGMA_TABLE_INFO('your_table');
+----
+
+[source, sql]
+----
+PRAGMA table_info('table_name')
+----
+
+[source, sql]
+----
+.schema
+----
+
+=== Syntax
+ The following example shows how the host program can do the equivalent to this Lua code:
+
+[source, lua]
+----
+ a = f("how", t.x, 14)
+----
+
+Here it is in C:
+
+[source, lua]
+----
+ lua_getglobal(L, "f");                  /* function to be called */
+ lua_pushliteral(L, "how");                       /* 1st argument */
+ lua_getglobal(L, "t");                    /* table to be indexed */
+ lua_getfield(L, -1, "x");        /* push result of t.x (2nd arg) */
+ lua_remove(L, -2);                  /* remove 't' from the stack */
+ lua_pushinteger(L, 14);                          /* 3rd argument */
+ lua_call(L, 3, 1);     /* call 'f' with 3 arguments and 1 result */
+ lua_setglobal(L, "a");                         /* set global 'a' */
+----
+
+== LIBSOUND
+http://libsound.io/
+== SDL AUDIO
+https://gigi.nullneuron.net/gigilabs/playing-a-wav-file-using-sdl2/
+== SDL MIXER
+https://wiki.libsdl.org/SDL2_mixer/FrontPage
+https://libsdl.org/projects/old/SDL_mixer/
+https://github.com/libsdl-org/SDL_mixer/releases
+https://libsdl.org/projects/old/SDL_mixer/docs/SDL_mixer.html
+https://soundprogramming.net/programming/tutorial-using-sdl2-and-sdl_mixer-to-play-samples/
+== TIME
+=== gettimeofday() in window
+https://stackoverflow.com/questions/10905892/equivalent-of-gettimeofday-for-windows
+windows equivalent to gettimeofday()
+
+[source, c]
+----
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <stdint.h> // portable: uint64_t   MSVC: __int64 
+
+// MSVC defines this in winsock2.h!?
+typedef struct timeval {
+    long tv_sec;
+    long tv_usec;
+} timeval;
+
+int gettimeofday(struct timeval * tp, struct timezone * tzp)
+{
+    // Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
+    // This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
+    // until 00:00:00 January 1, 1970 
+    static const uint64_t EPOCH = ((uint64_t) 116444736000000000ULL);
+
+    SYSTEMTIME  system_time;
+    FILETIME    file_time;
+    uint64_t    time;
+
+    GetSystemTime( &system_time );
+    SystemTimeToFileTime( &system_time, &file_time );
+    time =  ((uint64_t)file_time.dwLowDateTime )      ;
+    time += ((uint64_t)file_time.dwHighDateTime) << 32;
+
+    tp->tv_sec  = (long) ((time - EPOCH) / 10000000L);
+    tp->tv_usec = (long) (system_time.wMilliseconds * 1000);
+    return 0;
+}
+----
+=== timestamp in microseconds
+https://stackoverflow.com/questions/5833094/get-a-timestamp-in-c-in-microseconds
+== MACRO VA ARGS
+https://renenyffenegger.ch/notes/development/languages/C-C-plus-plus/preprocessor/macros/__VA_ARGS__/index
+https://learn.microsoft.com/en-us/cpp/preprocessor/variadic-macros?view=msvc-170
+
+== IGNORING SPECIFIC ERRORS
+https://stackoverflow.com/questions/3378560/how-to-disable-gcc-warnings-for-a-few-lines-of-code
+----
+#pragma GCC diagnostic ignored "-Wincompatible-pointer-types-discards-qualifiers" 
+#pragma GCC diagnostic error "-Wuninitialized"
+    foo(a);         /* error is given for this one */
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wuninitialized"
+    foo(b);         /* no diagnostic for this one */
+#pragma GCC diagnostic pop
+
+    foo(c);         /* error is given for this one */
+#pragma GCC diagnostic pop 
+
+    foo(d);         /* depends on command line options */
+
+----
+== LUA
+https://stackoverflow.com/questions/54916198/how-to-get-multiple-values-returned-into-table-without-returning-a-table-lua

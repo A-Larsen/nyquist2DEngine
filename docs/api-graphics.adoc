@@ -1,0 +1,78 @@
+= NYQUIST 2D ENGINE API
+:docinfo: shared
+:toc: left
+:source-highlighter: pygments
+:pygments-style: monokai
+:icons: font
+:stem:
+
+== nyq.graphics
+
+=== Draw functions
+Any draw function will draw to the _backbuffer_. You can view anything drawn to
+the _backbuffer_ by calling `update()`.
+
+=== *setColor(rgba)*
+Sets a color for the next element to be drawn to the _backbuffer_.
+
+parameters:: 
+* `rgba` [.api-type]#table#
+** `r` [.api-type]#number# red value from 0 to 255
+** `g` [.api-type]#number# green value from 0 to 255
+** `b` [.api-type]#number# blue value from 0 to 255
+** `a` [.api-type]#number# alpha channel value from 0 to 255
+
+.set color for drawing
+[source, lua]
+----
+-- sets the color to red with no alpha channel
+nyq.graphics.setColor({r = 255, g = 0, b = 0, a = 0})
+----
+
+=== *clear()*
+sets the entire window to the color specified by `setColor()`.
+
+.set the entire window to one color
+[source, lua]
+----
+-- sets the entire window to red with no alpha channel
+nyq.graphics.setColor({r = 255, g = 0, b = 0, a = 0})
+nyq.graphics.clear()
+-- update to display on window
+nyq.graphics.update()
+----
+
+=== *drawCircle(pos, radius, [tilt])*
+Draws a circle to the _backbuffer_. The border of the circle will be determined
+by `setColor()`
+
+parameters::
+* `pos` [.api-type]#table#
+** `x` [.api-type]#number# x position of circle
+** `y` [.api-type]#number# y position of circle
+* `[radius]` [.api-type]#number# radius of the circle
+* `[tilt]` [.api-type]#table#
+** `x` [.api-type]#number# x position of tilt
+** `y` [.api-type]#number# y position of tilt
+
+.createing a circle without tilt
+[source, lua]
+----
+-- sets a color
+nyq.graphics.setColor({r = 255, g = 0, b = 0, a = 0})
+-- draw circle to _backbuffer_
+nyq.graphics.drawCircle(pos, 100 --[[radius]])
+-- update to display on window
+nyq.graphics.update()
+----
+
+.creating a circle with tilt
+[source, lua]
+----
+-- sets a color
+nyq.graphics.setColor({r = 255, g = 0, b = 0, a = 0})
+-- draw circle to _backbuffer_
+nyq.graphics.drawCircle(pos, 100, {x = 2, y = 100} --[[tilt]])
+-- update to display on window
+nyq.update()
+----

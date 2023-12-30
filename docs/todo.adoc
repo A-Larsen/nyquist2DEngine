@@ -1,0 +1,124 @@
+== Lua
+- [ ] Make private section of ui_mt.lua
+
+- [ ] Make it so you don't need an if else statements when changing states
+
+- [ ] Change option select so it is initialized in the start function
+
+== Everything
+
+- [ ] refactoring
+
+- [X] have a que for updating rects, like sprites, images and fonts do
+
+- [x] Create grouping for images, sprites, fonts, etc.. the goupings will be
+      saved in a data file named "<start_id>-<end_id>", so that you can free the
+      memory for the element when you don't need it and the read the data file
+      to put the element back into memory.
+
+     * save format strings on disk. things that change like names, save in
+       memory 
+
+- [x] Turn ScreenElement struct into a union?
+
+- [x] nyq.database.init() has a memory leak for Schema and Schmea.kv
+
+- [ ] instead of creating lots of objects in the nyquist2DEngine struct, make
+      more translation units (header with c files) with static variables.
+
+- [ ] text and text options (like yes and no) for the world ui
+        * [ ] ablility to add images for faces
+
+- [ ] add more assert functions for error checking. Possibly change MEMRES to
+      assert
+
+- [ ] use https://www.doxygen.nl/[doxygen] for better documenation?
+
+== terminal
+
+- [ ] add command to see hitboxes
+
+- [ ] add command for no cliping
+
+== Mapeditor
+
+- [ ] mouse hovering highlight area in the map the object would take up
+
+- [ ] show area of grid 
+
+- [ ] visable grid in map editor
+
+- [ ] Object rotation
+
+- [X] Create a better way to place object so you don't place a bunch at once by
+      holding down mouse 1
+
+- [x] Fix Mapeditor limit in the number of object it saves
+
+- [X] Make a way to delete objects
+
+- [X] map confdig should have a usable hitbox
+
+- [X] should be able to load maps and then change them
+
+- [ ] save actions in map editor so you can also undo and redo actions
+
+- [ ] to change the sudo-zIndex in the mapeditor you can change the order of the
+      objects in the object array
+
+- [ ] save to raw image option, will probably need to write every pixel
+      individually to the file, check my understanding pixels video
+
+      * https://stackoverflow.com/questions/60491688/convert-raw-to-png-with-imagemagick[link] conver the raw image to a png with imagemagic, imagemagic is on windows
+        as well
+
+== Engine
+
+- [X] Change player speed
+
+- [ ] Rolling motion Physics
+
+- [X] Collision based on object properties
+
+- [X] Draw background for world
+
+- [X] Option for audio to be a one-short or a loop
+
+- [X] Create a new method for event triggering
+
+- [X] update levels:
+    * back world
+    * sprites and images (these should have z-indexes because they fight for levels)
+    * front world
+    * highlights (rectangle square selections)
+
+- [ ] have a seperate data folder for maps saved by user from gameplay
+
+- [X] figure out the front of the object from the hitbox and then update it
+      after the back of the sprite and in front of the player
+
+- [ ] audio fx should be a single audio file that can be choped up. different
+      sounds are saved into a timestamp. 
+
+- [ ] music should be a single audio file that can be choped up. different
+      sounds are saved into a timestamp. 
+
+- [ ] Music should be consolidated to one device and fx on another
+
+- [ ] make framerate higher for terminal and text input
+
+- [ ] Make character editor
+      ** [ ] base layer body type
+      ** [ ] skin layer
+      ** [ ] hair layer
+      ** [ ] clothers layer
+
+- [ ] set up enter_text ui to have keyboard input for controller
+
+== database
+
+- [ ] look for changes in schema and try to do that if possible
+
+== Links
+https://openstax.org/books/university-physics-volume-1/pages/11-1-rolling-motion[rolling-motion]
+
