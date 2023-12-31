@@ -44,6 +44,7 @@ int luaGlobal_init(lua_State *L)
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
     engine->players.count = 1;
+    engine->audio.wavInfo = NULL;
 
 
     SDL_Point p;
@@ -120,7 +121,7 @@ int luaGlobal_init(lua_State *L)
                     int num  = (int)luaL_checknumber(L, -1);
                     frame_rate = num;
             }
-            if (!strcmp(option, "controlls")) {
+            if (!strcmp(option, "controls")) {
                 if (lua_type(L, -1) == LUA_TTABLE) {
                     lua_pushnil(L);
 
@@ -703,7 +704,7 @@ const struct luaL_Reg luaFunctions_global[] = {
     {"getTicks", luaGlobal_getTicks},
     {"controlsUpdate", luaGlobal_controlsUpdate},
     {"draw", luaGlobal_drawUpdate},
-    {"controllsReset", luaGlobal_contollsReset},
+    {"controlsReset", luaGlobal_contollsReset},
     {"exit", luaGlobal_quit},
     {"hasFrameCap", luaGloabl_FrameCapEnable},
     {NULL, NULL}

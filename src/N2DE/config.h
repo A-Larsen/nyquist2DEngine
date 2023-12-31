@@ -19,6 +19,6 @@
 #define N2DE_CONFIG_H_
 
 #define PROGNAME "nyquist2DEngine"
-#define RESPATH "./.res"
+#define RESPATH "./resources"
 
 #endif // N2DE_CONFIG_H_

@@ -92,6 +92,14 @@ static void callback(void * userdata, uint8_t * stream, int streamLength)
 
 void audio_init(Audio *audio, WavFile *wav_files, int size)
 {
+    if (audio->wavInfo) {
+        for (uint8_t i = 0; i < audio->wavs_count; ++i) {
+            audio->wavInfo[i].wavPos = audio->wavInfo[i].wavStart;
+            SDL_PauseAudioDevice(audio->wavInfo[i].device_id, 1);
+            SDL_FreeWAV(audio->wavInfo[i].wavStart);
+            SDL_CloseAudioDevice(audio->wavInfo[i].device_id);
+        }
+    }
     audio->wavInfo = NULL;
     MEMRES(audio->wavInfo, sizeof(WavInfo) * size);
     for (uint8_t i = 0; i < size; ++i) {
