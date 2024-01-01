@@ -31,6 +31,13 @@ typedef struct _insert_data {
     char *sql;
 } _insert_data;
 
+typedef struct _update_data {
+    int index;
+    lua_State *state;
+    char *sql;
+    /* void *names; */
+} _update_data;
+
 int luaDatabase_init(lua_State *L) {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -184,6 +191,41 @@ static void _insert_callback(char *name, void *data)
     printf("sql: %s\n", ld->sql);
 }
 
+static void _update_callback(char *name, void *data)
+{
+    _update_data *ld = (_update_data *)data;
+
+    if (!lua_istable(ld->state, ld->index)) {
+        N2DE_ERROR("not a table");
+        exit(1);
+    }
+
+    lua_pushnil(ld->state);
+    while(lua_next(ld->state, ld->index)) {
+        char *key  = (char *)luaL_checkstring(ld->state, -2);
+
+        if (!strcmp(key, name)) {
+            int type = lua_type(ld->state, -1);
+            strcat(ld->sql, name);
+            strcat(ld->sql, " = ");
+            if (type == LUA_TNUMBER) {
+                int a  = (int)luaL_checknumber(ld->state, -1);
+                char num[10];
+                sprintf(num, "%d", a);
+                strcat(ld->sql, num);
+            }
+            if (type == LUA_TSTRING) {
+                char *a  = (char *)luaL_checkstring(ld->state, -1);
+                char str[SQLITE_MAX_STRING_SIZE];
+                sprintf(str, "\"%s\"", a);
+                strcat(ld->sql, str);
+            }
+            strcat(ld->sql, ",");
+        }
+        lua_pop(ld->state, 1);
+    }
+}
+
 int luaDatabase_insert(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
@@ -213,6 +255,44 @@ int luaDatabase_insert(lua_State *L)
     database_columns(&engine->database, table, (void *)&ld, _insert_callback);
     sql[strlen(sql) - 1] = '\0';
     strcat(sql, ")");
+    database_exec(&engine->database, sql);
+    return 0;
+}
+
+int luaDatabase_update(lua_State *L)
+{
+    Nyquist2DEngine *engine = NULL;
+    LUA_GETENGINE(L, engine);
+
+    char *table = (char *)luaL_checkstring(L, 1);
+
+    bool isTable = database_checkTable(&engine->database, table);
+
+    if (!isTable) {
+        N2DE_ERROR("%s is not a table", table);
+        exit(1);
+    }
+
+    char key_values[SQLITE_MAX_QUERY];
+    memset(key_values, 0, SQLITE_MAX_QUERY);
+    char sql[SQLITE_MAX_QUERY];
+    memset(sql, 0, SQLITE_MAX_QUERY);
+    /* char names[SQLITE_MAX_ROW_COUNT][SQLITE_MAX_STRING_SIZE]; */
+
+    /* int size = database_getColumnNames(&engine->database, table, names); */
+    /* sprintf(str, "UPDATE %s SET ", table); */
+    /* char names[50][10]; */
+    /* for (int i = 1; i < size; ++i) { */
+        /* strcat(sql, names[i]); */
+        /* if (i + 1 != size) strcat(sql, ","); */
+    /* } */
+    /* strcat(sql, ") VALUES ("); */
+    _update_data ld = {2, L, key_values};
+    database_columns(&engine->database, table, (void *)&ld, _update_callback);
+    key_values[strlen(key_values) - 1] = '\0';
+    sprintf(sql, "UPDATE %s SET %s WHERE id = %d", table, key_values, 1);
+    printf("%s\n", sql);
+    /* strcat(sql, ")"); */
     database_exec(&engine->database, sql);
     return 0;
 }
@@ -355,6 +435,7 @@ const struct luaL_Reg luaFunctions_database[] = {
     {"getFromUUID", luaDatabase_getFromUUID},
     {"getFromID", luaDatabase_getFromID},
     {"uuid", luaDatabase_uuid},
+    {"update", luaDatabase_update},
     {NULL, NULL}
 };
 
