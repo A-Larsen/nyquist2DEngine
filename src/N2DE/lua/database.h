@@ -265,6 +265,7 @@ int luaDatabase_update(lua_State *L)
     LUA_GETENGINE(L, engine);
 
     char *table = (char *)luaL_checkstring(L, 1);
+    uint8_t id = luaL_checknumber(L, 2);
 
     bool isTable = database_checkTable(&engine->database, table);
 
@@ -277,20 +278,10 @@ int luaDatabase_update(lua_State *L)
     memset(key_values, 0, SQLITE_MAX_QUERY);
     char sql[SQLITE_MAX_QUERY];
     memset(sql, 0, SQLITE_MAX_QUERY);
-    /* char names[SQLITE_MAX_ROW_COUNT][SQLITE_MAX_STRING_SIZE]; */
-
-    /* int size = database_getColumnNames(&engine->database, table, names); */
-    /* sprintf(str, "UPDATE %s SET ", table); */
-    /* char names[50][10]; */
-    /* for (int i = 1; i < size; ++i) { */
-        /* strcat(sql, names[i]); */
-        /* if (i + 1 != size) strcat(sql, ","); */
-    /* } */
-    /* strcat(sql, ") VALUES ("); */
-    _update_data ld = {2, L, key_values};
+    _update_data ld = {3, L, key_values};
     database_columns(&engine->database, table, (void *)&ld, _update_callback);
     key_values[strlen(key_values) - 1] = '\0';
-    sprintf(sql, "UPDATE %s SET %s WHERE id = %d", table, key_values, 1);
+    sprintf(sql, "UPDATE %s SET %s WHERE id = %d", table, key_values, id);
     printf("%s\n", sql);
     /* strcat(sql, ")"); */
     database_exec(&engine->database, sql);
