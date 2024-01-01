@@ -40,7 +40,7 @@ int luaText_create(lua_State *L)
 
     lua_tocolor(L, 5, &rgba_foreground);
     lua_tocolor(L, 6, &rgba_background);
-    if (rgba_background.a == 0) rgba_background.a = 1;
+    if (rgba_background.a <= 0) rgba_background.a = 1;
 
     int i = fonts_create(&engine->fonts, path, fontSize, engine->renderer,
                          text, zIndex, rgba_foreground, rgba_background);
@@ -62,7 +62,7 @@ int luaText_change(lua_State *L)
 
     lua_tocolor(L, 3, &rgba_foreground);
     lua_tocolor(L, 4, &rgba_background);
-    if (rgba_background.a == 0) rgba_background.a = 1;
+    if (rgba_background.a <= 0) rgba_background.a = 1;
 
     fonts_change(&engine->fonts, id, engine->renderer, 
                  text, rgba_foreground, rgba_background);
