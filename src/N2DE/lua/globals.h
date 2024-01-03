@@ -809,22 +809,26 @@ int luaGlobal_gamepadChange(lua_State *L)
     int id = luaL_checknumber(L, 1);
     const char * controller_name = luaL_checkstring(L, 2);
 
-    if (strcmp(controller_name, "none") == 0) {
-        engine->players.playerInfo[id].controller_id = -1;
-    } else  {
+    engine->players.playerInfo[id].controller_id = -1;
+
+    if (strcmp(controller_name, "none") != 0) {
         int controller_id = -1;
 
+        printf("gamepad search for '%s'\n", controller_name);
         for (int i = 0; i < SDL_NumJoysticks(); ++i){
             const char *name = SDL_GameControllerNameForIndex(i);
+            printf("found '%s'\n", name);
             if (strcmp(controller_name, name) == 0) {
+                printf("matched '%s'\n", name);
                 controller_id = i;
                 break;
             }
         }
-        if (engine->players.playerInfo[id].controller_id < 0) return 0;
 
-        /* engine->players.playerInfo[id].controller_type =  PLAYER_CONTOLLER_GAMEPAD; */
+        if (controller_id < 0) return 0;
         engine->players.playerInfo[id].controller_id = controller_id;
+
+        printf("connecting to %s\n", controller_name);
         engine->players.playerInfo[id].controller = \
             SDL_GameControllerOpen(controller_id);
 
