@@ -30,7 +30,7 @@ typedef enum {
 } controller_types;
 
 typedef struct _PlayerInfo {
-    uint8_t controller_id;
+    int controller_id;
     SDL_GameController *controller;
     uint8_t controller_type : 1;
     SDL_Point position;
