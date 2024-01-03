@@ -165,9 +165,9 @@ int luaGlobal_init(lua_State *L)
                     printf("lua player players.playerInfo[%d].controls_length: %d\n", player_id, engine->players.playerInfo[player_id].controls_length);
                 }
             }
-            if (!strcmp(option, "controller")) {
-                printf("controller!\n");
-            }
+            /* if (!strcmp(option, "controller")) { */
+            /*     printf("controller!\n"); */
+            /* } */
             if (!strcmp(option, "assign_controllers")) {
                     lua_pushnil(L);
                     uint8_t count = 0;
@@ -207,10 +207,10 @@ int luaGlobal_init(lua_State *L)
 
     /* printf("player_control_type_flags: %u\n", engine->player_control_type_flags); */
     engine->frame_rate = frame_rate;
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO)) {
-        N2DE_ERROR("could not initialize SDL\n%s", SDL_GetError());
-        exit(1);
-    }
+    /* if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO)) { */
+    /*     N2DE_ERROR("could not initialize SDL\n%s", SDL_GetError()); */
+    /*     exit(1); */
+    /* } */
     printf("controllers:  \n");
     for (int i = 0; i < SDL_NumJoysticks(); ++i){
         printf("%d controller: '%s' \n", i, SDL_GameControllerNameForIndex(i));
@@ -633,7 +633,7 @@ int luaGlobal_controlsUpdate(lua_State *L)
     return 0;
 }
 
-int luaGloabl_FrameCapEnable(lua_State *L)
+int luaGlobal_FrameCapEnable(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -696,6 +696,14 @@ int luaGlobal_quit(lua_State *L)
     engine->quit = true;
 }
 
+int luaGlobal_gamepadIsConnected(lua_State *L)
+{
+    Nyquist2DEngine *engine = NULL;
+    LUA_GETENGINE(L, engine);
+    lua_pushboolean(L, SDL_NumJoysticks());
+    return 1;
+}
+
 const struct luaL_Reg luaFunctions_global[] = {
     {"delay", luaGlobal_delay},
     {"init", luaGlobal_init},
@@ -706,7 +714,8 @@ const struct luaL_Reg luaFunctions_global[] = {
     {"draw", luaGlobal_drawUpdate},
     {"controlsReset", luaGlobal_contollsReset},
     {"exit", luaGlobal_quit},
-    {"hasFrameCap", luaGloabl_FrameCapEnable},
+    {"hasFrameCap", luaGlobal_FrameCapEnable},
+    {"gamepadIsConnected", luaGlobal_gamepadIsConnected},
     {NULL, NULL}
 };
 

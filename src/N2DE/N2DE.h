@@ -211,6 +211,10 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
 
 
     lua_setglobal(engine->lua_state, "nyq");
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO)) {
+        N2DE_ERROR("could not initialize SDL\n%s", SDL_GetError());
+        exit(1);
+    }
 }
 
 
