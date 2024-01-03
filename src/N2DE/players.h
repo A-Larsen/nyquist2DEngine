@@ -36,7 +36,8 @@ typedef struct _PlayerInfo {
     SDL_Point position;
     ControlsKV keyboard_controls[20];
     ControlsKV gamepad_controls[20];
-    int controls_length;
+    int keyboard_controls_length;
+    int gamepad_controls_length;
 } PlayerInfo;
 
 typedef struct _Players {
