@@ -38,6 +38,7 @@ typedef struct _PlayerInfo {
     ControlsKV gamepad_controls[20];
     int keyboard_controls_length;
     int gamepad_controls_length;
+    bool gamepad_isConnected;
 } PlayerInfo;
 
 typedef struct _Players {
