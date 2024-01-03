@@ -6,7 +6,7 @@
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
+ * This program is distributed in the hope that it will be useful, b,Wut WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
@@ -15,34 +15,25 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-#ifndef N2DE_CONTROLLER_H_
-#define N2DE_CONTROLLER_H_
+#ifndef _N2DE_CONTROLLER_H_
+#define _N2DE_CONTROLLER_H_
 
-#include "memory.h"
+#define _GNU_SOURCE
+
 #include <stdint.h>
-#include <string.h>
-#include "../SDL2/SDL.h"
-#include "declare.h"
+#include <stdbool.h>
 
-typedef enum {
-    PLAYER_CONTOLLER_KEYBOARD = 0,
-    PLAYER_CONTOLLER_GAMEPAD,
-} controller_types;
+#include "begin.h"
 
-typedef struct _PlayerInfo {
-    uint8_t controller_id;
-    SDL_GameController *controller;
-    uint8_t controller_type : 1;
-    SDL_Point position;
-    ControlsKV keyboard_controls[20];
-    ControlsKV gamepad_controls[20];
-    int controls_length;
-} PlayerInfo;
+int luaController_assign(lua_State *L)
+{
 
-typedef struct _Players {
-    PlayerInfo playerInfo[4];
-    uint8_t count;
-} Players;
+    return 1;
+}
 
+const struct luaL_Reg luaFunctions_audio[] = {
+    {"assign", luaController_assign},
+    {NULL, NULL}
+};
 
-#endif // N2DE_CONTROLLER_H_
+#endif // _N2DE_CONTROLLER_H_
