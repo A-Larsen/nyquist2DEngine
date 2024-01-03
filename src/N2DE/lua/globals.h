@@ -332,6 +332,8 @@ int luaGlobal_init(lua_State *L)
         PlayerInfo *player = &engine->players.playerInfo[0];
             player->keyboard_controls[i].previously_pressed = false;
             player->keyboard_controls[i].triggered = true;
+            player->gamepad_controls[i].previously_pressed = false;
+            player->gamepad_controls[i].triggered = true;
     }
     return 0;
 }
@@ -344,6 +346,8 @@ int luaGlobal_contollsReset(lua_State *L)
         PlayerInfo *player = &engine->players.playerInfo[0];
             player->keyboard_controls[i].previously_pressed = false;
             player->keyboard_controls[i].triggered = true;
+            player->gamepad_controls[i].previously_pressed = false;
+            player->gamepad_controls[i].triggered = true;
     }
 
 }
@@ -470,22 +474,22 @@ static void getGamepadControlls(Nyquist2DEngine *engine)
     engine->keyinfo.state = NULL;
     SDL_Keycode key = 0;
     bool terminal_key = false;
-    for (int i = 0; i < engine->players.playerInfo[0].keyboard_controls_length; ++i) {
+    for (int i = 0; i < engine->players.playerInfo[0].gamepad_controls_length; ++i) {
         PlayerInfo *player = &engine->players.playerInfo[0];
-        player->keyboard_controls[i].isPressed = \
+        player->gamepad_controls[i].isPressed = \
             SDL_GameControllerGetButton(player->controller, 
-            SDL_GameControllerGetButtonFromString(player->keyboard_controls[i].key));
-        if (!player->keyboard_controls[i].isPressed && player->keyboard_controls[i].previously_pressed) {
+            SDL_GameControllerGetButtonFromString(player->gamepad_controls[i].key));
+        if (!player->gamepad_controls[i].isPressed && player->gamepad_controls[i].previously_pressed) {
             // KEYUP!
-            if (!engine->players.playerInfo[0].keyboard_controls[i].repeat)
-                engine->players.playerInfo[0].keyboard_controls[i].triggered = false;
-            player->keyboard_controls[i].previously_pressed = false;
+            if (!engine->players.playerInfo[0].gamepad_controls[i].repeat)
+                engine->players.playerInfo[0].gamepad_controls[i].triggered = false;
+            player->gamepad_controls[i].previously_pressed = false;
         } 
 
-        if (player->keyboard_controls[i].isPressed){
-            if (engine->players.playerInfo[0].keyboard_controls[i].repeat)
-                engine->players.playerInfo[0].keyboard_controls[i].triggered = false;
-            player->keyboard_controls[i].previously_pressed = true;
+        if (player->gamepad_controls[i].isPressed){
+            if (engine->players.playerInfo[0].gamepad_controls[i].repeat)
+                engine->players.playerInfo[0].gamepad_controls[i].triggered = false;
+            player->gamepad_controls[i].previously_pressed = true;
         }
     }
     while (SDL_PollEvent(&engine->event)) {
@@ -668,26 +672,49 @@ int luaGlobal_controlsUpdate(lua_State *L)
     }
     lua_pop(L, 1);
 
-    for (int i = 0; i < engine->players.playerInfo[0].keyboard_controls_length; ++i) {
-        lua_getfield(L, -1, engine->players.playerInfo[0].keyboard_controls[i].alias);
-        bool lua_ispressed = (bool)lua_toboolean(L, -1);
-        lua_pop(L, 1);
 
-        lua_pushstring(L, engine->players.playerInfo[0].keyboard_controls[i].alias);
-        bool isPressed = engine->players.playerInfo[0].keyboard_controls[i].isPressed;
+    if(engine->players.playerInfo[0].controller_type == PLAYER_CONTOLLER_KEYBOARD) {
 
-        if (trigger || engine->players.playerInfo[0].keyboard_controls[i].keyTriggered) {
-            isPressed = false;
-            if (!engine->players.playerInfo[0].keyboard_controls[i].triggered) {
-                isPressed = true;
-                engine->players.playerInfo[0].keyboard_controls[i].triggered = true;
+        for (int i = 0; i < engine->players.playerInfo[0].keyboard_controls_length; ++i) {
+            lua_getfield(L, -1, engine->players.playerInfo[0].keyboard_controls[i].alias);
+            bool lua_ispressed = (bool)lua_toboolean(L, -1);
+            lua_pop(L, 1);
+
+            lua_pushstring(L, engine->players.playerInfo[0].keyboard_controls[i].alias);
+            bool isPressed = engine->players.playerInfo[0].keyboard_controls[i].isPressed;
+
+            if (trigger || engine->players.playerInfo[0].keyboard_controls[i].keyTriggered) {
+                isPressed = false;
+                if (!engine->players.playerInfo[0].keyboard_controls[i].triggered) {
+                    isPressed = true;
+                    engine->players.playerInfo[0].keyboard_controls[i].triggered = true;
+                }
+
             }
-
+            lua_pushboolean(L, isPressed);
+            lua_settable(L, -3);
         }
-        lua_pushboolean(L, isPressed);
-        lua_settable(L, -3);
+    }else if(engine->players.playerInfo[0].controller_type == PLAYER_CONTOLLER_GAMEPAD) {
 
+        for (int i = 0; i < engine->players.playerInfo[0].gamepad_controls_length; ++i) {
+            lua_getfield(L, -1, engine->players.playerInfo[0].gamepad_controls[i].alias);
+            bool lua_ispressed = (bool)lua_toboolean(L, -1);
+            lua_pop(L, 1);
 
+            lua_pushstring(L, engine->players.playerInfo[0].gamepad_controls[i].alias);
+            bool isPressed = engine->players.playerInfo[0].gamepad_controls[i].isPressed;
+
+            if (trigger || engine->players.playerInfo[0].gamepad_controls[i].keyTriggered) {
+                isPressed = false;
+                if (!engine->players.playerInfo[0].gamepad_controls[i].triggered) {
+                    isPressed = true;
+                    engine->players.playerInfo[0].gamepad_controls[i].triggered = true;
+                }
+
+            }
+            lua_pushboolean(L, isPressed);
+            lua_settable(L, -3);
+        }
     }
     /* SDL_Delay(.5); */
 
