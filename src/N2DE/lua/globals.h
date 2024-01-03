@@ -126,6 +126,7 @@ int luaGlobal_init(lua_State *L)
                     lua_pushnil(L);
 
                     int ki = 0;
+                    int gi = 0;
                     uint8_t player_id = 0;
                     while(lua_next(L, -2)) {
                         player_id = luaL_checknumber(L, -2);
@@ -185,13 +186,43 @@ int luaGlobal_init(lua_State *L)
                                     ki++;
                                 }
                             }
+
+                            if (strcmp(controller_type, "gamepad") == 0) {
+                                lua_pushnil(L);
+                                while(lua_next(L, -2)) {
+                                    const char *alias  = luaL_checkstring(L, -2);
+                                    memcpy(engine->players.playerInfo[player_id].gamepad_controls[gi].alias, alias, strlen(alias));
+
+                                    lua_getfield(L, -1, "key");
+                                    const char *key  = luaL_checkstring(L, -1);
+                                    lua_pop(L, 1);
+
+                                    memcpy(engine->players.playerInfo[player_id].gamepad_controls[gi].key, key, strlen(key));
+
+                                    lua_getfield(L, -1, "trigger");
+                                    bool trigger = (bool)lua_toboolean(L, -1);
+                                    lua_pop(L, 1);
+
+                                    engine->players.playerInfo[player_id].gamepad_controls[gi].keyTriggered = trigger;
+
+                                    lua_getfield(L, -1, "keyrepeat");
+                                    bool repeat = (bool)lua_toboolean(L, -1);
+                                    engine->players.playerInfo[player_id].gamepad_controls[gi].repeat = repeat;
+                                    lua_pop(L, 1);
+
+                                    engine->players.playerInfo[player_id].gamepad_controls[gi].isPressed = false;
+                                    lua_pop(L, 1);
+                                    gi++;
+                                }
+                            }
+
                             lua_pop(L, 1);
                         }
 
                         lua_pop(L, 1);
                     }
                     engine->players.playerInfo[player_id].keyboard_controls_length = ki;
-                    /* players_init(engine->players, PlayerInfo *playerInfo, uint8_t count) */
+                    engine->players.playerInfo[player_id].gamepad_controls_length = gi;
                     printf("lua player players.playerInfo[%d].keyboard_controls_length: %d\n", player_id, engine->players.playerInfo[player_id].keyboard_controls_length);
                 }
             }
