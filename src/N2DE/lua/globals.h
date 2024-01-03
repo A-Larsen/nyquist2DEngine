@@ -794,6 +794,7 @@ int luaGlobal_gamepadIsConnected(lua_State *L)
     lua_pushboolean(L, SDL_NumJoysticks());
     return 1;
 }
+
 int luaGlobal_gamepadChange(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
@@ -818,6 +819,31 @@ int luaGlobal_gamepadChange(lua_State *L)
     return 0;
 }
 
+int luaGlobal_getGamepads(lua_State *L)
+{
+    int i;
+    lua_newtable(L);
+    for (i = 0; i < SDL_NumJoysticks(); ++i){
+        const char *name = SDL_GameControllerNameForIndex(i);
+        lua_pushnumber(L, i + 1);
+        lua_pushstring(L, name);
+        lua_settable(L, -3);
+    }
+
+    return 1;
+}
+
+int luaGlobal_openGamepad(lua_State *L)
+{
+    Nyquist2DEngine *engine = NULL;
+    LUA_GETENGINE(L, engine);
+    int id = luaL_checknumber(L, 1);
+    int controller_id = luaL_checknumber(L, 2);
+    SDL_GameControllerOpen(controller_id);
+    engine->players.playerInfo[id].gamepad_isConnected = true;
+    return 0;
+}
+
 const struct luaL_Reg luaFunctions_global[] = {
     {"delay", luaGlobal_delay},
     {"init", luaGlobal_init},
@@ -831,6 +857,8 @@ const struct luaL_Reg luaFunctions_global[] = {
     {"hasFrameCap", luaGlobal_FrameCapEnable},
     {"gamepadIsConnected", luaGlobal_gamepadIsConnected},
     {"controllerChange", luaGlobal_gamepadChange},
+    {"getGamepads", luaGlobal_getGamepads},
+    {"openGamepad", luaGlobal_openGamepad},
     {NULL, NULL}
 };
 
