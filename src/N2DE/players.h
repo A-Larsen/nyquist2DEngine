@@ -24,21 +24,20 @@
 #include "../SDL2/SDL.h"
 #include "declare.h"
 
-typedef enum {
-    PLAYER_CONTOLLER_KEYBOARD = 0,
-    PLAYER_CONTOLLER_GAMEPAD,
-} controller_types;
+/* typedef enum { */
+/*     PLAYER_CONTOLLER_KEYBOARD = 0, */
+/*     PLAYER_CONTOLLER_GAMEPAD, */
+/* } controller_types; */
 
 typedef struct _PlayerInfo {
     int controller_id;
     SDL_GameController *controller;
-    uint8_t controller_type : 1;
+    /* uint8_t controller_type : 1; */
     SDL_Point position;
     ControlsKV keyboard_controls[20];
     ControlsKV gamepad_controls[20];
     int keyboard_controls_length;
     int gamepad_controls_length;
-    bool gamepad_isConnected;
 } PlayerInfo;
 
 typedef struct _Players {

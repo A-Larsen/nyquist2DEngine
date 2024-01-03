@@ -227,9 +227,7 @@ int luaGlobal_init(lua_State *L)
                     printf("lua player players.playerInfo[%d].gamepad_controls_length: %d\n", player_id, engine->players.playerInfo[player_id].gamepad_controls_length);
                 }
             }
-            /* if (!strcmp(option, "controller")) { */
-            /*     printf("controller!\n"); */
-            /* } */
+
             if (!strcmp(option, "assign_controllers")) {
                     lua_pushnil(L);
                     uint8_t count = 0;
@@ -248,9 +246,9 @@ int luaGlobal_init(lua_State *L)
                         /* printf("%d:  %s\n", i, type); */
                         if (strcmp(controller, "none") == 0) {
                             /* engine->player_control_type_flags |= (1 << i); */
-                            engine->players.playerInfo[i].controller_type = PLAYER_CONTOLLER_KEYBOARD;
+                            /* engine->players.playerInfo[i].controller_type = PLAYER_CONTOLLER_KEYBOARD; */
+                            engine->players.playerInfo[i].controller_id = -1;
                         } else {
-                            /* engine->player_control_type_flags &= ~(1 << i); */
                             int controller_id = -1;
 
                             for (int i = 0; i < SDL_NumJoysticks(); ++i){
@@ -262,9 +260,8 @@ int luaGlobal_init(lua_State *L)
                             }
                             printf("controller id: %d\n", controller_id);
                             engine->players.playerInfo[i].controller_id = controller_id;
-                            engine->players.playerInfo[i].controller_type = PLAYER_CONTOLLER_GAMEPAD;
+                            /* engine->players.playerInfo[i].controller_type = PLAYER_CONTOLLER_GAMEPAD; */
                         }
-                        /* engine->controller_ids[i] = id; */
 
                         lua_pop(L, 1);
                         count++;
@@ -289,15 +286,11 @@ int luaGlobal_init(lua_State *L)
     }
     printf("\n");
     for(int i = 0; i < engine->players.count; ++i){
-        engine->players.playerInfo[i].gamepad_isConnected = false;
-        if (engine->players.playerInfo[i].controller_type == PLAYER_CONTOLLER_GAMEPAD) {
-            if (engine->players.playerInfo[i].controller_id > 0) {
-                engine->players.playerInfo[i].controller = \
-                    SDL_GameControllerOpen(engine->players.playerInfo[i].controller_id);
-                    engine->players.playerInfo[i].gamepad_isConnected = true;
-                    printf("connecting to conntroller: %d\n", engine->players.playerInfo[i].controller_id);
+        if (engine->players.playerInfo[i].controller_id >= 0) {
+            engine->players.playerInfo[i].controller = \
+                SDL_GameControllerOpen(engine->players.playerInfo[i].controller_id);
+                printf("connecting to conntroller: %d\n", engine->players.playerInfo[i].controller_id);
 
-            }
         }
     }
     engine->window_rect.x = p.x;
@@ -567,9 +560,9 @@ int luaGlobal_controlsUpdate(lua_State *L)
 
     if (!engine->initialized) return 0;
 
-    switch (engine->players.playerInfo[0].controller_type){
-        case PLAYER_CONTOLLER_KEYBOARD: getKeyboardControlls(engine); break;
-        case PLAYER_CONTOLLER_GAMEPAD:  getGamepadControlls(engine); break;
+    switch ((engine->players.playerInfo[0].controller_id >= 0) ? 1 : 0){
+        case 0: getKeyboardControlls(engine); break;
+        case 1:  getGamepadControlls(engine); break;
     }
 
     lua_getglobal(L, "nyq");
@@ -689,7 +682,7 @@ int luaGlobal_controlsUpdate(lua_State *L)
     lua_pop(L, 1);
 
 
-    if(engine->players.playerInfo[0].controller_type == PLAYER_CONTOLLER_KEYBOARD) {
+    if(engine->players.playerInfo[0].controller_id == -1) {
 
         for (int i = 0; i < engine->players.playerInfo[0].keyboard_controls_length; ++i) {
             lua_getfield(L, -1, engine->players.playerInfo[0].keyboard_controls[i].alias);
@@ -710,7 +703,7 @@ int luaGlobal_controlsUpdate(lua_State *L)
             lua_pushboolean(L, isPressed);
             lua_settable(L, -3);
         }
-    }else if(engine->players.playerInfo[0].controller_type == PLAYER_CONTOLLER_GAMEPAD) {
+    }else{
 
         for (int i = 0; i < engine->players.playerInfo[0].gamepad_controls_length; ++i) {
             lua_getfield(L, -1, engine->players.playerInfo[0].gamepad_controls[i].alias);
@@ -798,15 +791,16 @@ int luaGlobal_quit(lua_State *L)
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
     engine->quit = true;
+    return 0;
 }
 
-int luaGlobal_gamepadIsConnected(lua_State *L)
-{
-    Nyquist2DEngine *engine = NULL;
-    LUA_GETENGINE(L, engine);
-    lua_pushboolean(L, SDL_NumJoysticks());
-    return 1;
-}
+/* int luaGlobal_gamepadIsConnected(lua_State *L) */
+/* { */
+/*     Nyquist2DEngine *engine = NULL; */
+/*     LUA_GETENGINE(L, engine); */
+/*     lua_pushboolean(L, SDL_NumJoysticks()); */
+/*     return 1; */
+/* } */
 
 int luaGlobal_gamepadChange(lua_State *L)
 {
@@ -816,7 +810,7 @@ int luaGlobal_gamepadChange(lua_State *L)
     const char * controller_name = luaL_checkstring(L, 2);
 
     if (strcmp(controller_name, "none") == 0) {
-        engine->players.playerInfo[id].controller_type =  PLAYER_CONTOLLER_KEYBOARD;
+        engine->players.playerInfo[id].controller_id = -1;
     } else  {
         int controller_id = -1;
 
@@ -829,12 +823,10 @@ int luaGlobal_gamepadChange(lua_State *L)
         }
         if (engine->players.playerInfo[id].controller_id < 0) return 0;
 
-
-        engine->players.playerInfo[id].controller_type =  PLAYER_CONTOLLER_GAMEPAD;
+        /* engine->players.playerInfo[id].controller_type =  PLAYER_CONTOLLER_GAMEPAD; */
         engine->players.playerInfo[id].controller_id = controller_id;
         engine->players.playerInfo[id].controller = \
             SDL_GameControllerOpen(controller_id);
-        engine->players.playerInfo[id].gamepad_isConnected = true;
 
     }
 
@@ -843,38 +835,39 @@ int luaGlobal_gamepadChange(lua_State *L)
 
 int luaGlobal_getGamepads(lua_State *L)
 {
-    int i;
+    int i = 0;
     lua_newtable(L);
-    for (i = 0; i < SDL_NumJoysticks(); ++i){
+    for (; i < SDL_NumJoysticks(); ++i){
         const char *name = SDL_GameControllerNameForIndex(i);
         lua_pushnumber(L, i + 1);
         lua_pushstring(L, name);
         lua_settable(L, -3);
     }
+    if (i == 0) lua_pushnil(L);
 
     return 1;
 }
 
-int luaGlobal_openGamepad(lua_State *L)
-{
-    Nyquist2DEngine *engine = NULL;
-    LUA_GETENGINE(L, engine);
-    int id = luaL_checknumber(L, 1);
-    const char *controller_name = luaL_checkstring(L, 2);
-    int controller_id = -1;
+/* int luaGlobal_openGamepad(lua_State *L) */
+/* { */
+/*     Nyquist2DEngine *engine = NULL; */
+/*     LUA_GETENGINE(L, engine); */
+/*     int id = luaL_checknumber(L, 1); */
+/*     const char *controller_name = luaL_checkstring(L, 2); */
+/*     int controller_id = -1; */
 
-    for (int i = 0; i < SDL_NumJoysticks(); ++i){
-        const char *name = SDL_GameControllerNameForIndex(i);
-        if (strcmp(controller_name, name) == 0) {
-            controller_id = i;
-            break;
-        }
-    }
-    if (engine->players.playerInfo[id].controller_id < 0) return 0;
-    SDL_GameControllerOpen(controller_id);
-    engine->players.playerInfo[id].gamepad_isConnected = true;
-    return 0;
-}
+/*     for (int i = 0; i < SDL_NumJoysticks(); ++i){ */
+/*         const char *name = SDL_GameControllerNameForIndex(i); */
+/*         if (strcmp(controller_name, name) == 0) { */
+/*             controller_id = i; */
+/*             break; */
+/*         } */
+/*     } */
+/*     if (engine->players.playerInfo[id].controller_id < 0) return 0; */
+/*     SDL_GameControllerOpen(controller_id); */
+/*     engine->players.playerInfo[id].gamepad_isConnected = true; */
+/*     return 0; */
+/* } */
 
 const struct luaL_Reg luaFunctions_global[] = {
     {"delay", luaGlobal_delay},
@@ -887,10 +880,10 @@ const struct luaL_Reg luaFunctions_global[] = {
     {"controlsReset", luaGlobal_contollsReset},
     {"exit", luaGlobal_quit},
     {"hasFrameCap", luaGlobal_FrameCapEnable},
-    {"gamepadIsConnected", luaGlobal_gamepadIsConnected},
+    /* {"gamepadIsConnected", luaGlobal_gamepadIsConnected}, */
     {"controllerChange", luaGlobal_gamepadChange},
     {"getGamepads", luaGlobal_getGamepads},
-    {"openGamepad", luaGlobal_openGamepad},
+    /* {"openGamepad", luaGlobal_openGamepad}, */
     {NULL, NULL}
 };
 

@@ -238,7 +238,7 @@ void engine_run(Nyquist2DEngine *engine)
 void engine_destroy(Nyquist2DEngine *engine)
 {
     for(int i = 0; i < engine->players.count; ++i){
-        if (engine->players.playerInfo[i].controller_type == PLAYER_CONTOLLER_GAMEPAD) {
+        if (engine->players.playerInfo[i].controller_id > -1) {
             SDL_GameControllerClose(engine->players.playerInfo[i].controller);
         }
     }
