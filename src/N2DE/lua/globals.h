@@ -811,7 +811,6 @@ int luaGlobal_gamepadChange(lua_State *L)
                 engine->players.playerInfo[i].controller = \
                     SDL_GameControllerOpen(engine->players.playerInfo[i].controller_id);
                     engine->players.playerInfo[i].gamepad_isConnected = true;
-                    printf("connecting to conntroller: %d\n", engine->players.playerInfo[i].controller_id);
             }
         }
     }
