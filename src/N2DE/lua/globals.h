@@ -809,6 +809,8 @@ int luaGlobal_gamepadChange(lua_State *L)
     int id = luaL_checknumber(L, 1);
     const char * controller_name = luaL_checkstring(L, 2);
 
+    char connection_str[500];
+    memset(connection_str, 0, 500);
     engine->players.playerInfo[id].controller_id = -1;
 
     if (strcmp(controller_name, "none") != 0) {
@@ -817,8 +819,11 @@ int luaGlobal_gamepadChange(lua_State *L)
         printf("gamepad search for '%s'\n", controller_name);
         for (int i = 0; i < SDL_NumJoysticks(); ++i){
             const char *name = SDL_GameControllerNameForIndex(i);
+            /* strcat(connection_str, name); */
+            sprintf(connection_str, "%d: %s", i, name);
+
             printf("found '%s'\n", name);
-            if (strcmp(controller_name, name) == 0) {
+            if (strcmp(connection_str, controller_name) == 0) {
                 printf("matched '%s'\n", name);
                 controller_id = i;
                 break;
@@ -840,11 +845,14 @@ int luaGlobal_gamepadChange(lua_State *L)
 int luaGlobal_getGamepads(lua_State *L)
 {
     int i = 0;
+    char connection_str[500];
     lua_newtable(L);
     for (; i < SDL_NumJoysticks(); ++i){
         const char *name = SDL_GameControllerNameForIndex(i);
         lua_pushnumber(L, i + 1);
-        lua_pushstring(L, name);
+        /* lua_pushstring(L, name); */
+        sprintf(connection_str, "%d: %s", i, name);
+        lua_pushstring(L, connection_str);
         lua_settable(L, -3);
     }
     if (i == 0) lua_pushnil(L);
