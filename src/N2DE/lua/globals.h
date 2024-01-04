@@ -251,9 +251,12 @@ int luaGlobal_init(lua_State *L)
                         } else {
                             int controller_id = -1;
 
+                            char connection_str[500];
+                            memset(connection_str, 0, 500);
                             for (int i = 0; i < SDL_NumJoysticks(); ++i){
                                 const char *name = SDL_GameControllerNameForIndex(i);
-                                if (strcmp(controller, name) == 0) {
+                                sprintf(connection_str, "%d: %s", i, name);
+                                if (strcmp(controller, connection_str) == 0) {
                                     controller_id = i;
                                     break;
                                 }
@@ -846,6 +849,7 @@ int luaGlobal_getGamepads(lua_State *L)
 {
     int i = 0;
     char connection_str[500];
+    memset(connection_str, 0, 500);
     lua_newtable(L);
     for (; i < SDL_NumJoysticks(); ++i){
         const char *name = SDL_GameControllerNameForIndex(i);
