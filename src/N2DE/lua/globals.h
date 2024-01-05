@@ -40,6 +40,9 @@ int luaGlobal_delay(lua_State *L)
 
 static void lua_setControls(lua_State *L)
 {
+    if (lua_type(L, -1) != LUA_TTABLE) {
+        return;
+    }
     // requires a table to be pushed to the top of the stack
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -209,9 +212,7 @@ int luaGlobal_init(lua_State *L)
                     frame_rate = num;
             }
             if (!strcmp(option, "controls")) {
-                if (lua_type(L, -1) == LUA_TTABLE) {
-                    lua_setControls(L);
-                }
+                lua_setControls(L);
             }
 
             if (!strcmp(option, "assign_controllers")) {
