@@ -26,6 +26,7 @@
 #include "../rects.h"
 #include "../lines.h"
 #include "../formats.h"
+#include "../inputs.h"
 #include "../players.h"
 
 
@@ -75,6 +76,7 @@ typedef struct _Nyquist2DEngine {
     /* uint8_t controller_ids[4]; */
     /* SDL_GameController *controllers[4]; */
     /* uint8_t player_count; */
+    Inputs inputs;
     Players players;
     /* UpdateElement update_elements[20]; */
 } Nyquist2DEngine;

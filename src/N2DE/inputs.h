@@ -15,8 +15,8 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-#ifndef N2DE_PLAYERS_H_
-#define N2DE_PLAYERS_H_
+#ifndef N2DE_INPUTS_H_
+#define N2DE_INPUTS_H_
 
 #include "memory.h"
 #include <stdint.h>
@@ -24,14 +24,18 @@
 #include "../SDL2/SDL.h"
 #include "declare.h"
 
-typedef struct _PlayerInfo {
-    SDL_Point position;
-} PlayerInfo;
+typedef struct _InputInfo {
+    int controller_id;
+    SDL_GameController *controller;
+    ControlsKV keyboard_controls[20];
+    ControlsKV gamepad_controls[20];
+    int keyboard_controls_length;
+    int gamepad_controls_length;
+} InputInfo;
 
-typedef struct _Players {
-    PlayerInfo playerInfo[4];
+typedef struct _Inputs {
+    InputInfo inputInfo[4];
     uint8_t count;
-} Players;
+} Inputs;
 
-
-#endif // N2DE_PLAYERS_H_
+#endif // N2DE_INPUTS_H_
