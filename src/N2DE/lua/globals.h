@@ -749,18 +749,19 @@ int luaGlobal_gamepadCheck(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
-    int id = luaL_checknumber(L, 1);
-    PlayerInfo *player = &engine->players.playerInfo[id];
     while (true) {
         printf("scanning\n");
-        for(int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; ++i){
-            if(SDL_GameControllerGetButton(player->controller, (SDL_GameControllerButton)i)) {
-                const char *str = SDL_GameControllerGetStringForButton((SDL_GameControllerButton)i);
-                printf("%s\n", str);
-                lua_pushstring(L, str);
-                return 1;
+        for(int id = 0; id < engine->players.count; ++id){
+            PlayerInfo *player = &engine->players.playerInfo[id];
+            for(int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; ++i){
+                if(SDL_GameControllerGetButton(player->controller, (SDL_GameControllerButton)i)) {
+                    const char *str = SDL_GameControllerGetStringForButton((SDL_GameControllerButton)i);
+                    printf("%s\n", str);
+                    lua_pushstring(L, str);
+                    return 1;
+                }
+                
             }
-            
         }
     }
 }
