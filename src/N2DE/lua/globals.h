@@ -739,11 +739,13 @@ int luaGlobal_keypressCheck(lua_State *L)
     LUA_GETENGINE(L, engine);
 
     while (true) {
+        SDL_Keycode key = 0;
         while (SDL_PollEvent(&engine->event)) {
             switch (engine->event.type) {
-                case SDL_KEYDOWN: 
+                case SDL_KEYUP: 
                 {
-                    SDL_Keycode key = engine->event.key.keysym.sym;
+                    key = engine->event.key.keysym.sym;
+                    engine->event.key.keysym.sym = 0;
                     const char *name  = SDL_GetKeyName(key);
                     lua_pushstring(L, name);
                     return 1;
