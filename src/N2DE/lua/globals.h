@@ -480,6 +480,7 @@ static void getKeyboardControlls(Nyquist2DEngine *engine)
                             &engine->keyinfo);
     }
 }
+
 static void getGamepadControlls(Nyquist2DEngine *engine)
 {
     uint8_t *keystate = 0;
@@ -732,6 +733,25 @@ int luaGlobal_controlsUpdate(lua_State *L)
 
     return 0;
 }
+int luaGlobal_keypressCheck(lua_State *L)
+{
+    Nyquist2DEngine *engine = NULL;
+    LUA_GETENGINE(L, engine);
+
+    while (true) {
+        while (SDL_PollEvent(&engine->event)) {
+            switch (engine->event.type) {
+                case SDL_KEYDOWN: 
+                {
+                    SDL_Keycode key = engine->event.key.keysym.sym;
+                    const char *name  = SDL_GetKeyName(key);
+                    lua_pushstring(L, name);
+                    return 1;
+                }
+            }
+        }
+    }
+}
 
 int luaGlobal_FrameCapEnable(lua_State *L)
 {
@@ -899,6 +919,7 @@ const struct luaL_Reg luaFunctions_global[] = {
     /* {"gamepadIsConnected", luaGlobal_gamepadIsConnected}, */
     {"controllerChange", luaGlobal_gamepadChange},
     {"getGamepads", luaGlobal_getGamepads},
+    {"keypressCheck", luaGlobal_keypressCheck},
     /* {"openGamepad", luaGlobal_openGamepad}, */
     {NULL, NULL}
 };
