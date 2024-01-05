@@ -54,7 +54,6 @@ static void lua_setControls(lua_State *L)
         input_id = luaL_checknumber(L, -2);
         input_id -= 1;
         InputInfo *input = &engine->inputs.inputInfo[input_id];
-        printf("lua input id: %d\n", input_id);
         lua_pushnil(L);
         while(lua_next(L, -2)) {
             const char *controller_type  = luaL_checkstring(L, -2);

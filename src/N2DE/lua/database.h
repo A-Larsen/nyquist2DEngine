@@ -188,7 +188,7 @@ static void _insert_callback(char *name, void *data)
         }
         lua_pop(ld->state, 1);
     }
-    printf("sql: %s\n", ld->sql);
+    /* printf("sql: %s\n", ld->sql); */
 }
 
 static void _update_callback(char *name, void *data)
@@ -252,6 +252,7 @@ int luaDatabase_insert(lua_State *L)
     strcat(sql, ") VALUES (");
     _insert_data ld = {2, L, sql};
     printf("%s\n", sql);
+    printf("sql len: %d\n", strlen(sql));
     database_columns(&engine->database, table, (void *)&ld, _insert_callback);
     sql[strlen(sql) - 1] = '\0';
     strcat(sql, ")");
