@@ -770,7 +770,8 @@ int luaGlobal_gamepadCheck(lua_State *L)
 		        SDL_PumpEvents();
                 if(SDL_GameControllerGetButton(player->controller, (SDL_GameControllerButton)i)) {
                     const char *str = SDL_GameControllerGetStringForButton((SDL_GameControllerButton)i);
-                    printf("%s\n", str);
+                    SDL_FlushEvents(0x650, 0x650 + 9);
+                    lua_pushstring(L, str);
                     return 1;
                 }
 
