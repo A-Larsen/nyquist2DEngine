@@ -38,6 +38,93 @@ int luaGlobal_delay(lua_State *L)
     return 0;
 }
 
+static void lua_setControls(lua_State *L)
+{
+    // requires a table to be pushed to the top of the stack
+    Nyquist2DEngine *engine = NULL;
+    LUA_GETENGINE(L, engine);
+    lua_pushnil(L);
+
+    int ki = 0;
+    int gi = 0;
+    uint8_t player_id = 0;
+    while(lua_next(L, -2)) {
+        player_id = luaL_checknumber(L, -2);
+        player_id -= 1;
+        printf("lua player id: %d\n", player_id);
+        lua_pushnil(L);
+        while(lua_next(L, -2)) {
+            const char *controller_type  = luaL_checkstring(L, -2);
+            if (strcmp(controller_type, "keyboard") == 0) {
+                lua_pushnil(L);
+                while(lua_next(L, -2)) {
+                    const char *alias  = luaL_checkstring(L, -2);
+                    memcpy(engine->players.playerInfo[player_id].keyboard_controls[ki].alias, alias, strlen(alias));
+
+                    lua_getfield(L, -1, "key");
+                    const char *key  = luaL_checkstring(L, -1);
+                    lua_pop(L, 1);
+
+                    memcpy(engine->players.playerInfo[player_id].keyboard_controls[ki].key, key, strlen(key));
+
+                    lua_getfield(L, -1, "trigger");
+                    bool trigger = (bool)lua_toboolean(L, -1);
+                    lua_pop(L, 1);
+
+                    engine->players.playerInfo[player_id].keyboard_controls[ki].keyTriggered = trigger;
+
+                    lua_getfield(L, -1, "keyrepeat");
+                    bool repeat = (bool)lua_toboolean(L, -1);
+                    engine->players.playerInfo[player_id].keyboard_controls[ki].repeat = repeat;
+                    lua_pop(L, 1);
+
+                    engine->players.playerInfo[player_id].keyboard_controls[ki].isPressed = false;
+                    lua_pop(L, 1);
+                    ki++;
+                }
+            }
+
+            if (strcmp(controller_type, "gamepad") == 0) {
+                lua_pushnil(L);
+                while(lua_next(L, -2)) {
+                    const char *alias  = luaL_checkstring(L, -2);
+                    memcpy(engine->players.playerInfo[player_id].gamepad_controls[gi].alias, alias, strlen(alias));
+
+                    lua_getfield(L, -1, "key");
+                    const char *key  = luaL_checkstring(L, -1);
+                    lua_pop(L, 1);
+
+                    memcpy(engine->players.playerInfo[player_id].gamepad_controls[gi].key, key, strlen(key));
+
+                    lua_getfield(L, -1, "trigger");
+                    bool trigger = (bool)lua_toboolean(L, -1);
+                    lua_pop(L, 1);
+
+                    engine->players.playerInfo[player_id].gamepad_controls[gi].keyTriggered = trigger;
+
+                    lua_getfield(L, -1, "keyrepeat");
+                    bool repeat = (bool)lua_toboolean(L, -1);
+                    engine->players.playerInfo[player_id].gamepad_controls[gi].repeat = repeat;
+                    lua_pop(L, 1);
+
+                    engine->players.playerInfo[player_id].gamepad_controls[gi].isPressed = false;
+                    lua_pop(L, 1);
+                    gi++;
+                }
+            }
+
+            lua_pop(L, 1);
+        }
+
+        lua_pop(L, 1);
+    }
+    engine->players.playerInfo[player_id].keyboard_controls_length = ki;
+    engine->players.playerInfo[player_id].gamepad_controls_length = gi;
+    printf("lua player players.playerInfo[%d].keyboard_controls_length: %d\n", player_id, engine->players.playerInfo[player_id].keyboard_controls_length);
+    printf("lua player players.playerInfo[%d].gamepad_controls_length: %d\n", player_id, engine->players.playerInfo[player_id].gamepad_controls_length);
+
+}
+
 int luaGlobal_init(lua_State *L)
 {
     int arg_count = lua_gettop(L);
@@ -123,108 +210,7 @@ int luaGlobal_init(lua_State *L)
             }
             if (!strcmp(option, "controls")) {
                 if (lua_type(L, -1) == LUA_TTABLE) {
-                    lua_pushnil(L);
-
-                    int ki = 0;
-                    int gi = 0;
-                    uint8_t player_id = 0;
-                    while(lua_next(L, -2)) {
-                        player_id = luaL_checknumber(L, -2);
-                        player_id -= 1;
-                        printf("lua player id: %d\n", player_id);
-                        lua_pushnil(L);
-                        while(lua_next(L, -2)) {
-                            /* const char *alias  = luaL_checkstring(L, -2); */
-                            /* memcpy(engine->players.playerInfo[player_id].keyboard_controls[i].alias, alias, strlen(alias)); */
-
-                            /* lua_getfield(L, -1, "key"); */
-                            /* const char *key  = luaL_checkstring(L, -1); */
-                            /* lua_pop(L, 1); */
-
-                            /* memcpy(engine->players.playerInfo[player_id].keyboard_controls[i].key, key, strlen(key)); */
-
-                            /* lua_getfield(L, -1, "trigger"); */
-                            /* bool trigger = (bool)lua_toboolean(L, -1); */
-                            /* lua_pop(L, 1); */
-
-                            /* engine->players.playerInfo[player_id].keyboard_controls[i].keyTriggered = trigger; */
-
-                            /* lua_getfield(L, -1, "keyrepeat"); */
-                            /* bool repeat = (bool)lua_toboolean(L, -1); */
-                            /* engine->players.playerInfo[player_id].keyboard_controls[i].repeat = repeat; */
-                            /* lua_pop(L, 1); */
-
-                            /* engine->players.playerInfo[player_id].keyboard_controls[i].isPressed = false; */
-                            /* lua_pop(L, 1); */
-                            /* i++; */
-                            const char *controller_type  = luaL_checkstring(L, -2);
-                            if (strcmp(controller_type, "keyboard") == 0) {
-                                lua_pushnil(L);
-                                while(lua_next(L, -2)) {
-                                    const char *alias  = luaL_checkstring(L, -2);
-                                    memcpy(engine->players.playerInfo[player_id].keyboard_controls[ki].alias, alias, strlen(alias));
-
-                                    lua_getfield(L, -1, "key");
-                                    const char *key  = luaL_checkstring(L, -1);
-                                    lua_pop(L, 1);
-
-                                    memcpy(engine->players.playerInfo[player_id].keyboard_controls[ki].key, key, strlen(key));
-
-                                    lua_getfield(L, -1, "trigger");
-                                    bool trigger = (bool)lua_toboolean(L, -1);
-                                    lua_pop(L, 1);
-
-                                    engine->players.playerInfo[player_id].keyboard_controls[ki].keyTriggered = trigger;
-
-                                    lua_getfield(L, -1, "keyrepeat");
-                                    bool repeat = (bool)lua_toboolean(L, -1);
-                                    engine->players.playerInfo[player_id].keyboard_controls[ki].repeat = repeat;
-                                    lua_pop(L, 1);
-
-                                    engine->players.playerInfo[player_id].keyboard_controls[ki].isPressed = false;
-                                    lua_pop(L, 1);
-                                    ki++;
-                                }
-                            }
-
-                            if (strcmp(controller_type, "gamepad") == 0) {
-                                lua_pushnil(L);
-                                while(lua_next(L, -2)) {
-                                    const char *alias  = luaL_checkstring(L, -2);
-                                    memcpy(engine->players.playerInfo[player_id].gamepad_controls[gi].alias, alias, strlen(alias));
-
-                                    lua_getfield(L, -1, "key");
-                                    const char *key  = luaL_checkstring(L, -1);
-                                    lua_pop(L, 1);
-
-                                    memcpy(engine->players.playerInfo[player_id].gamepad_controls[gi].key, key, strlen(key));
-
-                                    lua_getfield(L, -1, "trigger");
-                                    bool trigger = (bool)lua_toboolean(L, -1);
-                                    lua_pop(L, 1);
-
-                                    engine->players.playerInfo[player_id].gamepad_controls[gi].keyTriggered = trigger;
-
-                                    lua_getfield(L, -1, "keyrepeat");
-                                    bool repeat = (bool)lua_toboolean(L, -1);
-                                    engine->players.playerInfo[player_id].gamepad_controls[gi].repeat = repeat;
-                                    lua_pop(L, 1);
-
-                                    engine->players.playerInfo[player_id].gamepad_controls[gi].isPressed = false;
-                                    lua_pop(L, 1);
-                                    gi++;
-                                }
-                            }
-
-                            lua_pop(L, 1);
-                        }
-
-                        lua_pop(L, 1);
-                    }
-                    engine->players.playerInfo[player_id].keyboard_controls_length = ki;
-                    engine->players.playerInfo[player_id].gamepad_controls_length = gi;
-                    printf("lua player players.playerInfo[%d].keyboard_controls_length: %d\n", player_id, engine->players.playerInfo[player_id].keyboard_controls_length);
-                    printf("lua player players.playerInfo[%d].gamepad_controls_length: %d\n", player_id, engine->players.playerInfo[player_id].gamepad_controls_length);
+                    lua_setControls(L);
                 }
             }
 
@@ -907,6 +893,12 @@ int luaGlobal_getGamepads(lua_State *L)
 /*     return 0; */
 /* } */
 
+int lua_Global_setControls(lua_State *L)
+{
+    lua_setControls(L);
+    return 0;
+}
+
 const struct luaL_Reg luaFunctions_global[] = {
     {"delay", luaGlobal_delay},
     {"init", luaGlobal_init},
@@ -922,6 +914,7 @@ const struct luaL_Reg luaFunctions_global[] = {
     {"controllerChange", luaGlobal_gamepadChange},
     {"getGamepads", luaGlobal_getGamepads},
     {"keypressCheck", luaGlobal_keypressCheck},
+    {"setControls", lua_Global_setControls},
     /* {"openGamepad", luaGlobal_openGamepad}, */
     {NULL, NULL}
 };
