@@ -34,6 +34,7 @@ typedef struct _PlayerInfo {
     SDL_GameController *controller;
     /* uint8_t controller_type : 1; */
     SDL_Point position;
+    /* bool controller_checked; */
     ControlsKV keyboard_controls[20];
     ControlsKV gamepad_controls[20];
     int keyboard_controls_length;

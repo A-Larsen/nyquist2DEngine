@@ -250,6 +250,7 @@ int luaGlobal_init(lua_State *L)
                             printf("controller id: %d\n", controller_id);
                             engine->players.playerInfo[i].controller_id = controller_id;
                             engine->players.playerInfo[i].controller = NULL;
+                            /* engine->players.playerInfo[i].controller_checked = false; */
                             /* engine->players.playerInfo[i].controller_type = PLAYER_CONTOLLER_GAMEPAD; */
                         }
 
@@ -480,6 +481,11 @@ static void getGamepadControlls(Nyquist2DEngine *engine, int id)
     bool terminal_key = false;
     for (int i = 0; i < engine->players.playerInfo[id].gamepad_controls_length; ++i) {
         PlayerInfo *player = &engine->players.playerInfo[id];
+        /* if(player->controller_checked) { */
+        /*     SDL_PollEvent(&engine->event); */
+        /*     player->controller_checked = false; */
+        /*     continue; */
+        /* } */
         player->gamepad_controls[i].isPressed = \
             SDL_GameControllerGetButton(player->controller, 
             SDL_GameControllerGetButtonFromString(player->gamepad_controls[i].key));
@@ -751,31 +757,36 @@ int luaGlobal_gamepadCheck(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
-    for(int id = 0; id < engine->players.count; ++id){
-        PlayerInfo *player = &engine->players.playerInfo[id];
+    int id = luaL_checknumber(L, 1);
+    PlayerInfo *player = &engine->players.playerInfo[id];
 
-        if (!player->controller) {
-            printf("reconnecting controller\n");
-            SDL_GameControllerOpen(player->controller_id);
-        }
-
+    if (!player->controller) {
+        printf("reconnecting controller\n");
+        SDL_GameControllerOpen(player->controller_id);
     }
 
+
+    int found = -1;
     while (true) {
         /* printf("scanning\n"); */
-        for(int id = 0; id < engine->players.count; ++id){
-            PlayerInfo *player = &engine->players.playerInfo[id];
-            if (!player->controller) continue;
-            for(int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; ++i){
-		        SDL_PumpEvents();
-                if(SDL_GameControllerGetButton(player->controller, (SDL_GameControllerButton)i)) {
-                    const char *str = SDL_GameControllerGetStringForButton((SDL_GameControllerButton)i);
-                    SDL_FlushEvents(0x650, 0x650 + 9);
-                    lua_pushstring(L, str);
-                    return 1;
-                }
-
+        SDL_PumpEvents();
+        PlayerInfo *player = &engine->players.playerInfo[id];
+        if (!player->controller) continue;
+        for(int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; ++i){
+            if(SDL_GameControllerGetButton(player->controller, (SDL_GameControllerButton)i)) {
+                found = i;
+                /* const char *str = SDL_GameControllerGetStringForButton((SDL_GameControllerButton)i); */
+                /* lua_pushstring(L, str); */
+                /* /1* engine->players.playerInfo[i].controller_checked = true; *1/ */
+                /* return 1; */
             }
+            if ((found != -1) && (!SDL_GameControllerGetButton(player->controller, (SDL_GameControllerButton)found))) {
+                const char *str = SDL_GameControllerGetStringForButton((SDL_GameControllerButton)i);
+                lua_pushstring(L, str);
+                /* engine->players.playerInfo[i].controller_checked = true; */
+                return 1;
+            }
+
         }
                     /* lua_pushstring(L, str); */
     }
