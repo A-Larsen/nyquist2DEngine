@@ -7,8 +7,6 @@
 
 == Everything
 
-- [ ] refactoring
-
 - [X] have a que for updating rects, like sprites, images and fonts do
 
 - [x] Create grouping for images, sprites, fonts, etc.. the goupings will be
@@ -73,6 +71,8 @@
         as well
 
 == Engine
+
+- [ ] implement https://wiki.libsdl.org/SDL2/SDL_GameControllerGetSteamHandle[steam input]
 
 - [X] Change player speed
 
