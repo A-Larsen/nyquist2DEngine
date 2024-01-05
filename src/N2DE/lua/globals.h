@@ -766,21 +766,17 @@ int luaGlobal_gamepadCheck(lua_State *L)
         for(int id = 0; id < engine->players.count; ++id){
             PlayerInfo *player = &engine->players.playerInfo[id];
             if (!player->controller) continue;
-                if(SDL_GameControllerGetButton(player->controller, SDL_CONTROLLER_BUTTON_A)) {
-                    printf("yep\n");
-                    return 0;
+            for(int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; ++i){
+		        SDL_PumpEvents();
+                if(SDL_GameControllerGetButton(player->controller, (SDL_GameControllerButton)i)) {
+                    const char *str = SDL_GameControllerGetStringForButton((SDL_GameControllerButton)i);
+                    printf("%s\n", str);
+                    return 1;
                 }
-            /* for(int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; ++i){ */
-            /*     /1* printf("%d\n", i); *1/ */
-            /*     if(SDL_GameControllerGetButton(player->controller, (SDL_GameControllerButton)i)) { */
-            /*         /1* const char *str = SDL_GameControllerGetStringForButton((SDL_GameControllerButton)i); *1/ */
-            /*         /1* /2* printf("%s\n", str); *2/ *1/ */
-            /*         /1* lua_pushstring(L, str); *1/ */
-            /*         /1* return 1; *1/ */
-            /*     } */
-                
-            /* } */
+
+            }
         }
+                    /* lua_pushstring(L, str); */
     }
 }
 
