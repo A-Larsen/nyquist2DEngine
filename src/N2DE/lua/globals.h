@@ -249,6 +249,7 @@ int luaGlobal_init(lua_State *L)
                             }
                             printf("controller id: %d\n", controller_id);
                             engine->players.playerInfo[i].controller_id = controller_id;
+                            engine->players.playerInfo[i].controller = NULL;
                             /* engine->players.playerInfo[i].controller_type = PLAYER_CONTOLLER_GAMEPAD; */
                         }
 
@@ -333,6 +334,7 @@ int luaGlobal_init(lua_State *L)
                 player->keyboard_controls[i].triggered = true;
                 player->gamepad_controls[i].previously_pressed = false;
                 player->gamepad_controls[i].triggered = true;
+            /* PlayerInfo *player = &engine->players.playerInfo[0]; */
         }
     }
     return 0;
@@ -749,10 +751,15 @@ int luaGlobal_gamepadCheck(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
+    for(int id = 0; id < engine->players.count; ++id){
+        SDL_GameControllerOpen(engine->players.playerInfo[id].controller_id);
+    }
+
     while (true) {
         printf("scanning\n");
         for(int id = 0; id < engine->players.count; ++id){
             PlayerInfo *player = &engine->players.playerInfo[id];
+            if (!player->controller) break;
             for(int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; ++i){
                 if(SDL_GameControllerGetButton(player->controller, (SDL_GameControllerButton)i)) {
                     const char *str = SDL_GameControllerGetStringForButton((SDL_GameControllerButton)i);
