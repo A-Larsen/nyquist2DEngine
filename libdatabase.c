@@ -1,29 +1,6 @@
-/* 
- * Copyright (C) 2022  Austin Larsen
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, b,Wut WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-#ifndef N2DE_LUA_DATABASE_H_
-#define N2DE_LUA_DATABASE_H_
-
-#define _GNU_SOURCE
-
-#include <stdint.h>
-#include <stdbool.h>
-
-#include "begin.h"
+#include "./src/lua5.3/lua.h"
+#include "./src/lua5.3/lauxlib.h"
+#include "./src/N2DE/N2DE.h"
 
 typedef struct _insert_data {
     int index;
@@ -37,7 +14,7 @@ typedef struct _update_data {
     char *sql;
 } _update_data;
 
-int luaDatabase_init(lua_State *L) {
+__declspec(dllexport) int libdatabase_init(lua_State *L) {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
     char path[255];
@@ -156,7 +133,7 @@ int luaDatabase_init(lua_State *L) {
 }
 
 
-static void _insert_callback(char *name, void *data)
+void _insert_callback(char *name, void *data)
 {
     _insert_data *ld = (_insert_data *)data;
 
@@ -190,7 +167,7 @@ static void _insert_callback(char *name, void *data)
     /* printf("sql: %s\n", ld->sql); */
 }
 
-static void _update_callback(char *name, void *data)
+void _update_callback(char *name, void *data)
 {
     _update_data *ld = (_update_data *)data;
 
@@ -225,7 +202,7 @@ static void _update_callback(char *name, void *data)
     }
 }
 
-int luaDatabase_insert(lua_State *L)
+__declspec(dllexport) int libdatabase_insert(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -259,7 +236,7 @@ int luaDatabase_insert(lua_State *L)
     return 0;
 }
 
-int luaDatabase_update(lua_State *L)
+__declspec(dllexport) int libdatabase_update(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -293,7 +270,7 @@ typedef struct _getAll_data {
     char names[SQLITE_MAX_ROW_COUNT][SQLITE_MAX_STRING_SIZE];
 } _getAll_data;
 
-static void _getAll_callback(sqlite3_stmt *stmt, int i, int size, void *data)
+void _getAll_callback(sqlite3_stmt *stmt, int i, int size, void *data)
 {
     _getAll_data *gad = (_getAll_data *)data;
 
@@ -320,7 +297,7 @@ static void _getAll_callback(sqlite3_stmt *stmt, int i, int size, void *data)
     lua_settable(gad->L, -3);
 }
 
-static void _getFromUUID_callback(sqlite3_stmt *stmt, int i, int size, void *data)
+void _getFromUUID_callback(sqlite3_stmt *stmt, int i, int size, void *data)
 {
     _getAll_data *gad = (_getAll_data *)data;
 
@@ -344,7 +321,7 @@ static void _getFromUUID_callback(sqlite3_stmt *stmt, int i, int size, void *dat
     }
 }
 
-int luaDatabase_getAll(lua_State *L)
+__declspec(dllexport) int libdatabase_getAll(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -365,7 +342,7 @@ int luaDatabase_getAll(lua_State *L)
     return 1;
 }
 
-int luaDatabase_getFromUUID(lua_State *L)
+__declspec(dllexport) int libdatabase_getFromUUID(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -387,7 +364,7 @@ int luaDatabase_getFromUUID(lua_State *L)
     return 1;
 }
 
-int luaDatabase_getFromID(lua_State *L)
+__declspec(dllexport) int libdatabase_getFromID(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -409,15 +386,18 @@ int luaDatabase_getFromID(lua_State *L)
     return 1;
 }
 
-
-const struct luaL_Reg luaFunctions_database[] = {
-    {"init", luaDatabase_init},
-    {"insert", luaDatabase_insert},
-    {"getAll", luaDatabase_getAll},
-    {"getFromUUID", luaDatabase_getFromUUID},
-    {"getFromID", luaDatabase_getFromID},
-    {"update", luaDatabase_update},
+__declspec(dllexport) luaL_Reg libdatabase[] = {
+    {"init", libdatabase_init},
+    {"insert", libdatabase_insert},
+    {"getAll", libdatabase_getAll},
+    {"getFromUUID", libdatabase_getFromUUID},
+    {"getFromID", libdatabase_getFromID},
+    {"update", libdatabase_update},
     {NULL, NULL}
 };
 
-#endif // N2DE_LUA_DATABASE_H_
+__declspec(dllexport) int luaopen_extensions_libdatabase(lua_State *L)
+{
+    luaL_newlib(L, libdatabase);
+    return 1;
+}
