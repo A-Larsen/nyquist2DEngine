@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+lib="${1##lib}"
+[[ ! -d ./extensions/$lib ]] && mkdir ./extensions/"$lib"
+
+read -r -d '' initfile << EOF
+local $1 = require("extensions.$1")
+return $1
+EOF
+
+echo "$initfile" > ./extensions/"$lib"/init.lua

@@ -1,5 +1,7 @@
 include config.mk
 
+SHELL := /bin/bash
+
 COMPILE_ARGS = \
 	$(DEFINES) \
 	$(CFLAGS) \
@@ -59,6 +61,11 @@ test: ./src/N2DE/*.h
 
 libdothings: libdothings.c
 	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
+
+
+libaudio: libaudio.c
+	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
+	@eval "./scripts/setup_extension $@"
 
 
 $(OUT): build

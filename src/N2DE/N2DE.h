@@ -27,6 +27,7 @@
 
 #include "config.h"
 #include "memory.h"
+#include "error.h"
 #include "world.h"
 #include "declare.h"
 #include "lua/begin.h"
