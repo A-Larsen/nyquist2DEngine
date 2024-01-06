@@ -37,7 +37,7 @@
 #include "../fonts.h"
 #include "../config.h"
 #include "../mouse.h"
-#include "../waiting.h"
+/* #include "../waiting.h" */
 #include "./sdl.h"
 #include <stdint.h>
 
@@ -159,7 +159,7 @@ typedef struct _MapEditor {
     Fonts fonts;
     Mouse mouse;
     uint8_t toggleFlags;
-    Waiting waiting;
+    /* Waiting waiting; */
     float zoom_size;
     float zoom_default;
     ScreenElement *update_elements[MAX_UPDATE_ELEMENTS];
