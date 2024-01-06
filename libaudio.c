@@ -79,10 +79,19 @@ __declspec(dllexport) int stopAll(lua_State *L)
     return 0;
 }
 
+__declspec(dllexport) int quit(lua_State *L)
+{
+    Nyquist2DEngine *engine = NULL;
+    LUA_GETENGINE(L, engine);
+    audio_quit(&engine->audio);
+    return 0;
+}
+
 __declspec(dllexport) luaL_Reg libaudio[] = {
     {"init", init},
     {"play", play},
     {"stopAll", stopAll},
+    {"quit", quit},
     {NULL, NULL}
 };
 
