@@ -57,6 +57,9 @@ test: ./src/N2DE/*.h
 		-o $(TEST)\
 		$(LIBS)
 
+libdothings: libdothings.c
+	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
+
 
 $(OUT): build
 steamdeck: build-steamdeck
