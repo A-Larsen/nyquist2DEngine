@@ -63,7 +63,8 @@ libdothings: libdothings.c
 	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
 
 
-libaudio: libaudio.c
+# example: make EXTENSION="libaudio" libaudio
+$(EXTENSION): $(EXTENSION).c
 	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
 	@eval "./scripts/setup_extension $@"
 

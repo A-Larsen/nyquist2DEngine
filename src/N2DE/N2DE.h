@@ -37,8 +37,6 @@
 #include "lua/database.h"
 #include "lua/sprites.h"
 #include "lua/loops.h"
-/* #include "lua/audio.h" */
-#include "lua/terminal.h"
 #include "lua/world.h"
 #include "lua/players.h"
 #include "lua/map.h"
@@ -189,9 +187,6 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
     lua_settable(engine->lua_state, -3); // nyq
 
 
-    luaF_newFuncsTable(engine->lua_state, "terminal", luaFunctions_terminal);
-    lua_settable(engine->lua_state, -3); // nyq
-                                         //
     luaF_newFuncsTable(engine->lua_state, "world", luaFunctions_world);
     lua_settable(engine->lua_state, -3); // nyq
                                          //
@@ -257,7 +252,6 @@ void engine_destroy(Nyquist2DEngine *engine)
     /* circles_free(&engine->circles); */
     rects_free();
     lines_free(&engine->lines);
-    terminal_free(&engine->terminal);
     TTF_Quit();
     IMG_Quit();
     printf("end\n");
