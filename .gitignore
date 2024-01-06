@@ -12,3 +12,4 @@ docs/*.html
 core
 **/.db
 .cache/*
+extensions
