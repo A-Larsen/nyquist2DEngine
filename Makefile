@@ -10,6 +10,10 @@ OUTPUT_ARGS = \
 	-o $(OUT)\
 	$(LIBS)
 
+ifdef EXTENSION
+start: options $(EXTENSION)
+endif
+
 all: options $(OUT)
 
 options:
@@ -24,11 +28,11 @@ build: ./src/N2DE/*.h ./src/nyquist2DEngine.c
 		$(COMPILE_ARGS)\
 		$(OUTPUT_ARGS)
 
-build-steamdeck: ./src/N2DE/*.h ./src/nyquist2DEngine.c
-	$(CC) $^\
-		$(COMPILE_ARGS)\
-        -D STEAMDECK \
-		$(OUTPUT_ARGS)
+# build-steamdeck: ./src/N2DE/*.h ./src/nyquist2DEngine.c
+# 	$(CC) $^\
+# 		$(COMPILE_ARGS)\
+#         -D STEAMDECK \
+# 		$(OUTPUT_ARGS)
 
 build_debug: ./src/N2DE/*.h ./src/nyquist2DEngine.c
 	$(CC) $^ \
@@ -63,14 +67,14 @@ libdothings: libdothings.c
 	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
 
 
-# example: make EXTENSION="libaudio" libaudio
+# example: make EXTENSION="libaudio"
 $(EXTENSION): $(EXTENSION).c
-	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
 	@eval "./scripts/setup_extension $@"
+	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
 
 
 $(OUT): build
-steamdeck: build-steamdeck
+# steamdeck: build-steamdeck
 debug: build_debug
 mapeditor: build_mapeditor
 mapeditor_debug: build_mapeditor_debug

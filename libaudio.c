@@ -2,7 +2,7 @@
 #include "./src/lua5.3/lauxlib.h"
 #include "./src/N2DE/N2DE.h"
 
-__declspec(dllexport) int init(lua_State *L)
+__declspec(dllexport) int libaudio_init(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -59,7 +59,7 @@ __declspec(dllexport) int init(lua_State *L)
     return 0;
 }
 
-__declspec(dllexport) int play(lua_State *L)
+__declspec(dllexport) int libaudio_play(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -71,7 +71,7 @@ __declspec(dllexport) int play(lua_State *L)
     return 0;
 }
 
-__declspec(dllexport) int stopAll(lua_State *L)
+__declspec(dllexport) int libaudio_stopAll(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -79,7 +79,7 @@ __declspec(dllexport) int stopAll(lua_State *L)
     return 0;
 }
 
-__declspec(dllexport) int quit(lua_State *L)
+__declspec(dllexport) int libaudio_quit(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -88,15 +88,13 @@ __declspec(dllexport) int quit(lua_State *L)
 }
 
 __declspec(dllexport) luaL_Reg libaudio[] = {
-    {"init", init},
-    {"play", play},
-    {"stopAll", stopAll},
-    {"quit", quit},
+    {"init", libaudio_init},
+    {"play", libaudio_play},
+    {"stopAll", libaudio_stopAll},
+    {"quit", libaudio_quit},
     {NULL, NULL}
 };
 
-/* __declspec(dllexport) int luaopen_mylib_lib(lua_State *L) */
-/* __declspec(dllexport) int luaopen_mylib(lua_State *L) */
 __declspec(dllexport) int luaopen_extensions_libaudio(lua_State *L)
 {
     luaL_newlib(L, libaudio);

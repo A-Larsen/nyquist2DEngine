@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
+#
 lib="${1##lib}"
-[[ ! -d ./extensions/$lib ]] && mkdir ./extensions/"$lib"
+
+[[ ! -d ./extensions/$lib ]] && mkdir -p ./extensions/"$lib"
 
 read -r -d '' initfile << EOF
 local $1 = require("extensions.$1")
