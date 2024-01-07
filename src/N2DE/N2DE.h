@@ -32,7 +32,7 @@
 #include "declare.h"
 #include "lua/begin.h"
 #include "lua/globals.h"
-#include "lua/text.h"
+/* #include "lua/text.h" */
 /* #include "lua/images.h" */
 /* #include "lua/database.h" */
 /* #include "lua/sprites.h" */
@@ -175,8 +175,8 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
     lua_pushboolean(engine->lua_state, false);
     lua_settable(engine->lua_state, -3); // nyq
 
-    luaF_newFuncsTable(engine->lua_state, "text", luaFunctions_text);
-    lua_settable(engine->lua_state, -3); // nyq
+    /* luaF_newFuncsTable(engine->lua_state, "text", luaFunctions_text); */
+    /* lua_settable(engine->lua_state, -3); // nyq */
 
     /* luaF_newFuncsTable(engine->lua_state, "images", luaFunctions_images); */
     /* lua_settable(engine->lua_state, -3); // nyq */
