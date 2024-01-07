@@ -1,29 +1,8 @@
-/* 
- * Copyright (C) 2022  Austin Larsen
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-#ifndef N2DE_LUA_IMAGE_H_
-#define N2DE_LUA_IMAGE_H_
+#include "./src/lua5.3/lua.h"
+#include "./src/lua5.3/lauxlib.h"
+#include "./src/N2DE/N2DE.h"
 
-#include <stdint.h>
-#include <stdio.h>
-
-#include "begin.h"
-
-int luaImage_create(lua_State *L)
+int libimages_create(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -48,7 +27,7 @@ int luaImage_create(lua_State *L)
     return 1;
 }
 
-int luaImage_rotate(lua_State *L)
+int libimages_rotate(lua_State *L)
 {
     int i = (int)luaL_checknumber(L, 1);
     uint32_t rotation = (uint32_t)luaL_checknumber(L, 2);
@@ -60,7 +39,7 @@ int luaImage_rotate(lua_State *L)
     return 0;
 }
 
-int luaImage_update(lua_State *L)
+int libimages_update(lua_State *L)
 {
     int arg_count = lua_gettop(L);
     Nyquist2DEngine *engine = NULL;
@@ -79,7 +58,7 @@ int luaImage_update(lua_State *L)
     return 0;
 }
 
-int luaImage_newGroup(lua_State *L)
+int libimages_newGroup(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -88,7 +67,7 @@ int luaImage_newGroup(lua_State *L)
     return 1;
 }
 
-int luaImages_loadGroup(lua_State *L)
+int libimages_loadGroup(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -98,7 +77,7 @@ int luaImages_loadGroup(lua_State *L)
     return 1;
 }
 
-int luaImages_saveGroup(lua_State *L)
+int libimages_saveGroup(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -107,7 +86,7 @@ int luaImages_saveGroup(lua_State *L)
     return 0;
 }
 
-int luaImages_free(lua_State *L)
+int libimages_free(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -115,15 +94,19 @@ int luaImages_free(lua_State *L)
     return 0;
 }
 
-const struct luaL_Reg luaFunctions_images[] = {
-    {"create", luaImage_create},
-    {"rotate", luaImage_rotate},
-    {"update", luaImage_update},
-    {"newGroup", luaImage_newGroup},
-    {"saveGroup", luaImages_saveGroup},
-    {"loadGroup", luaImages_loadGroup},
-    {"free", luaImages_free},
+luaL_Reg libimages[] = {
+    {"create", libimages_create},
+    {"rotate", libimages_rotate},
+    {"update", libimages_update},
+    {"newGroup", libimages_newGroup},
+    {"saveGroup", libimages_saveGroup},
+    {"loadGroup", libimages_loadGroup},
+    {"free", libimages_free},
     {NULL, NULL}
 };
 
-#endif // N2DE_LUA_IMAGE_H_
+int luaopen_extensions_libimages(lua_State *L)
+{
+    luaL_newlib(L, libimages);
+    return 1;
+}
