@@ -7,17 +7,17 @@ COMPILE_ARGS = \
 	$(CFLAGS) \
 
 OUTPUT_ARGS = \
-	-o $(OUT)\
+	-o $(ENGINE)\
 	$(LIBS)
 
 ifdef EXTENSION
 start: options $(EXTENSION)
 endif
 
-all: options $(OUT)
+all: options $(ENGINE)
 
 options:
-	@echo $(OUT) build options:
+	@echo $(ENGINE) build options:
 	@echo ======================
 	@echo "CFLAGS   = $(CFLAGS)"
 	@echo "LIBS     = $(LIBS)"
@@ -56,7 +56,7 @@ $(EXTENSION): $(EXTENSION).c
 	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
 
 
-$(OUT): build
+$(ENGINE): options build
 debug: build_debug
 mapeditor: build_mapeditor
 mapeditor_debug: build_mapeditor_debug
@@ -64,9 +64,9 @@ mapeditor_debug: build_mapeditor_debug
 install: all
 
 clean:
-	rm -rf $(OUT) *.o *.exe extensions
+	rm -rf $(ENGINE) *.o *.exe extensions
 
 uinstall: 
 	# remove all program files
 
-.PHONY: clean all install $(OUT) debug mapeditor
+.PHONY: clean all install $(ENGINE) debug mapeditor
