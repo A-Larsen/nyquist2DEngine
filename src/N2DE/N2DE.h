@@ -36,7 +36,7 @@
 #include "lua/images.h"
 /* #include "lua/database.h" */
 /* #include "lua/sprites.h" */
-#include "lua/loops.h"
+/* #include "lua/loops.h" */
 #include "lua/world.h"
 #include "lua/players.h"
 #include "lua/map.h"
@@ -187,8 +187,8 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
     /* luaF_newFuncsTable(engine->lua_state, "sprites", luaFunctions_sprites); */
     /* lua_settable(engine->lua_state, -3); // nyq */
 
-    luaF_newFuncsTable(engine->lua_state, "loops", luaFunctions_loops);
-    lua_settable(engine->lua_state, -3); // nyq
+    /* luaF_newFuncsTable(engine->lua_state, "loops", luaFunctions_loops); */
+    /* lua_settable(engine->lua_state, -3); // nyq */
 
 
     luaF_newFuncsTable(engine->lua_state, "world", luaFunctions_world);
