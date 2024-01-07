@@ -41,7 +41,6 @@
 #include "lua/players.h"
 #include "lua/map.h"
 #include "lua/rects.h"
-#include "lua/formats.h"
 
 #define SDL_main main
 #define VERSION (uint32_t)0x00000001
@@ -199,8 +198,8 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
     luaF_newFuncsTable(engine->lua_state, "rects", luaFunctions_rects);
     lua_settable(engine->lua_state, -3); // nyq
 
-    luaF_newFuncsTable(engine->lua_state, "formats", luaFunctions_formats);
-    lua_settable(engine->lua_state, -3); // nyq
+    /* luaF_newFuncsTable(engine->lua_state, "formats", luaFunctions_formats); */
+    /* lua_settable(engine->lua_state, -3); // nyq */
 
 
     lua_setglobal(engine->lua_state, "nyq");
