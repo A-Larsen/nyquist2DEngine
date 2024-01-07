@@ -1,28 +1,8 @@
-/* 
- * Copyright (C) 2022  Austin Larsen
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, b,Wut WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51
- * Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-#ifndef N2DE_LUA_SPRITES_H
-#define N2DE_LUA_SPRITES_H
+#include "./src/lua5.3/lua.h"
+#include "./src/lua5.3/lauxlib.h"
+#include "./src/N2DE/N2DE.h"
 
-#define _GNU_SOURCE
-
-#include "begin.h"
-
-int luaSprites_new(lua_State *L)
+int libsprites_new(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -39,8 +19,7 @@ int luaSprites_new(lua_State *L)
     lua_pushnumber(L, i);
     return 1;
 }
-
-int luaSprites_addCrops(lua_State *L)
+int libsprites_addCrops(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -101,7 +80,8 @@ int luaSprites_addCrops(lua_State *L)
     return 0;
 }
 
-int luaSprites_updateCrop(lua_State *L)
+
+int libsprites_updateCrop(lua_State *L)
 {
     int arg_count = lua_gettop(L);
     Nyquist2DEngine *engine = NULL;
@@ -149,7 +129,8 @@ int luaSprites_updateCrop(lua_State *L)
     return 0;
 }
 
-int luaSprites_rotateCrop(lua_State *L)
+
+int libsprites_rotateCrop(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -159,7 +140,8 @@ int luaSprites_rotateCrop(lua_State *L)
     return 0;
 }
 
-int luaSprites_getCurrentFrame(lua_State *L)
+
+int libsprites_getCurrentFrame(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -172,7 +154,8 @@ int luaSprites_getCurrentFrame(lua_State *L)
     return 1;
 }
 
-int luaSprites_animate(lua_State *L)
+
+int libsprites_animate(lua_State *L)
 {
     int arg_count = lua_gettop(L);
     Nyquist2DEngine *engine = NULL;
@@ -195,7 +178,8 @@ int luaSprites_animate(lua_State *L)
     return 1;
 }
 
-int luaSprites_countCrops(lua_State *L)
+
+int libsprites_countCrops(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -206,7 +190,8 @@ int luaSprites_countCrops(lua_State *L)
     return 1;
 }
 
-int luaSprites_free(lua_State *L)
+
+int libsprites_quit(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -214,7 +199,8 @@ int luaSprites_free(lua_State *L)
     return 0;
 }
 
-int luaSprites_getRect(lua_State *L)
+
+int libsprites_getRect(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -245,17 +231,21 @@ int luaSprites_getRect(lua_State *L)
     return 1;
 }
 
-const struct luaL_Reg luaFunctions_sprites[] = {
-    {"new", luaSprites_new},
-    {"addCrops", luaSprites_addCrops},
-    {"updateCrop", luaSprites_updateCrop},
-    {"rotateCrop", luaSprites_rotateCrop},
-    {"getCurrentFrame", luaSprites_getCurrentFrame},
-    {"countCrops", luaSprites_countCrops},
-    {"animate", luaSprites_animate},
-    {"free", luaSprites_free},
-    {"getRect", luaSprites_getRect},
+luaL_Reg libsprites[] = {
+    {"new", libsprites_new},
+    {"addCrops", libsprites_addCrops},
+    {"updateCrop", libsprites_updateCrop},
+    {"rotateCrop", libsprites_rotateCrop},
+    {"getCurrentFrame", libsprites_getCurrentFrame},
+    {"countCrops", libsprites_countCrops},
+    {"animate", libsprites_animate},
+    {"quit", libsprites_quit},
+    {"getRect", libsprites_getRect},
     {NULL, NULL}
 };
 
-#endif // N2DE_LUA_SPRITES_H
+int luaopen_extensions_libsprites(lua_State *L)
+{
+    luaL_newlib(L, libsprites);
+    return 1;
+}

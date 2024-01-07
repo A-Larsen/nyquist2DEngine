@@ -35,7 +35,7 @@
 #include "lua/text.h"
 #include "lua/images.h"
 /* #include "lua/database.h" */
-#include "lua/sprites.h"
+/* #include "lua/sprites.h" */
 #include "lua/loops.h"
 #include "lua/world.h"
 #include "lua/players.h"
@@ -146,8 +146,8 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
     lua_pushnumber(engine->lua_state, SQLITE_TEXT_UNIQUE);
     lua_setglobal(engine->lua_state, "DB_TEXT_UNIQUE");
 
-    lua_pushnil(engine->lua_state);
-    lua_setglobal(engine->lua_state, "key");
+    /* lua_pushnil(engine->lua_state); */
+    /* lua_setglobal(engine->lua_state, "key"); */
 
 
     /* lui */
@@ -184,8 +184,8 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
     /* luaF_newFuncsTable(engine->lua_state, "database", luaFunctions_database); */
     /* lua_settable(engine->lua_state, -3); // nyq */
                                          //
-    luaF_newFuncsTable(engine->lua_state, "sprites", luaFunctions_sprites);
-    lua_settable(engine->lua_state, -3); // nyq
+    /* luaF_newFuncsTable(engine->lua_state, "sprites", luaFunctions_sprites); */
+    /* lua_settable(engine->lua_state, -3); // nyq */
 
     luaF_newFuncsTable(engine->lua_state, "loops", luaFunctions_loops);
     lua_settable(engine->lua_state, -3); // nyq
@@ -250,7 +250,7 @@ void engine_destroy(Nyquist2DEngine *engine)
     world_free(&engine->world);
     /* lua_freeSchema(engine->lua_state); */
     lua_close(engine->lua_state);
-    sprites_free(&engine->sprites);
+    /* sprites_free(&engine->sprites); */
     loops_free(&engine->loops);
     /* audio_quit(&engine->audio); */
     /* circles_free(&engine->circles); */
