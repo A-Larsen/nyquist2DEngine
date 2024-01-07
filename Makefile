@@ -12,6 +12,8 @@ OUTPUT_ARGS = \
 
 ifdef PRODUCTION
 DEFINES := $(DEFINES) -D PRODUCTION
+else
+ENGINE := $(ENGINE)_dev
 endif
 
 ifdef EXTENSION
