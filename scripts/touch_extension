@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+libname="lib${1}"
+
+cat > ${libname}.c <<EOF
+#include "./src/lua5.3/lua.h"
+#include "./src/lua5.3/lauxlib.h"
+#include "./src/N2DE/N2DE.h"
+
+luaL_Reg ${libname}[] = {
+    {NULL, NULL}
+};
+
+int luaopen_extensions_${libname}(lua_State *L)
+{
+    luaL_newlib(L, ${libname});
+    return 1;
+}
+EOF
