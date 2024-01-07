@@ -28,13 +28,6 @@ int luaFormats_create(lua_State *L)
     LUA_GETENGINE(L, engine);
 
     char *text = (char *)luaL_checkstring(L, 1);
-
-
-    /* int i = fonts_create(&engine->format_strings, path, fontSize, engine->renderer, */
-    /*                      text, zIndex, rgba_foreground, rgba_background); */
-    /* int i = fonts_create(&engine->format_strings, path, fontSize, engine->renderer, */
-    /*                      text, zIndex, rgba_foreground, rgba_background); */
-
     uint8_t i = formats_add(text);
     lua_pushnumber(L, i);
     return 1;
@@ -52,7 +45,6 @@ int luaFormats_newGroup(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
-    /* uint16_t i = fonts_newGroup(&engine->format_strings); */
     uint8_t i = formats_newGroup();
     lua_pushnumber(L, i);
     return 1;

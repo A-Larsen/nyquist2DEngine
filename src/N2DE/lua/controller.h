@@ -31,7 +31,7 @@ int luaController_assign(lua_State *L)
     return 1;
 }
 
-const struct luaL_Reg luaFunctions_audio[] = {
+const struct luaL_Reg luaFunctions_controller[] = {
     {"assign", luaController_assign},
     {NULL, NULL}
 };
