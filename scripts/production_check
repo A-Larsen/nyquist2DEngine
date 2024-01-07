@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+echo -n "are you sure you want to build PRODUCTION defined ? (y/n): "
+read -n1 ans
+
+[[ "$ans" == "y" ]] && exit 0 || exit 1

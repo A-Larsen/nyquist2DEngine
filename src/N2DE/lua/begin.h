@@ -22,7 +22,9 @@
 #include "../circles.h"
 #include "../rects.h"
 #include "../declare.h"
+#ifndef PRODUCTION
 #include "../terminal.h"
+#endif
 #include "../rects.h"
 #include "../lines.h"
 #include "../formats.h"
@@ -64,7 +66,9 @@ typedef struct _Nyquist2DEngine {
     Loops loops;
     Audio audio;
     Circles circles;
+#ifndef PRODUCTION
     Terminal terminal;
+#endif
     KeyInfo keyinfo;
     bool running;
     uint8_t frame_rate;

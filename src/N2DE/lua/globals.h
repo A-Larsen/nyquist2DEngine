@@ -313,11 +313,13 @@ int luaGlobal_init(lua_State *L)
 
     SDL_SetRenderDrawColor(engine->renderer, 0, 0, 0, 255);
     SDL_RenderClear(engine->renderer);
+#ifndef PRODUCTION
     terminal_init(&engine->terminal, term_max_history, term_font_size, term_height);
     terminal_changeFgColor(&engine->terminal, &term_fg_color);
     terminal_changeBgColor(&engine->terminal, &term_bg_color);
     terminal_changeCMDColor(&engine->terminal, &term_cmd_color);
     terminal_changeErrorColor(&engine->terminal, &term_error_color);
+#endif
     engine->initialized = true;
 
     loop_id = loops_add(&engine->loops, engine->frame_rate);
@@ -401,7 +403,9 @@ static void getKeyboardControlls(Nyquist2DEngine *engine, int id)
     uint8_t *keystate = 0;
     engine->keyinfo.state = NULL;
     SDL_Keycode key = 0;
+#ifndef PRODUCTION
     bool terminal_key = false;
+#endif
     while (SDL_PollEvent(&engine->event)) {
         keystate = (uint8_t *)SDL_GetKeyboardState(NULL);
         engine->keyinfo.state = keystate;
@@ -412,10 +416,12 @@ static void getKeyboardControlls(Nyquist2DEngine *engine, int id)
         {
             engine->keyinfo.key = key;
             engine->keyinfo.isDown = true;
+#ifndef PRODUCTION
             if (key == SDLK_BACKQUOTE && keystate[SDL_SCANCODE_LCTRL]) {
                 terminal_key = true;
             }
             if (engine->terminal.toggled) break;
+#endif
             for (int i = 0; i < engine->inputs.inputInfo[id].keyboard_controls_length; ++i) {
 
                 if (!strcmp(engine->inputs.inputInfo[id].keyboard_controls[i].key, 
@@ -432,7 +438,9 @@ static void getKeyboardControlls(Nyquist2DEngine *engine, int id)
             engine->keyinfo.isDown = false;
             engine->keyinfo.state = NULL;
             engine->keyinfo.key = 0;
+#ifndef PRODUCTION
             if (engine->terminal.toggled) break;
+#endif
             for (int i = 0; i < engine->inputs.inputInfo[id].keyboard_controls_length; ++i) {
                 if (!strcmp(engine->inputs.inputInfo[id].keyboard_controls[i].key, 
                             SDL_GetKeyName(key))) {
@@ -446,6 +454,7 @@ static void getKeyboardControlls(Nyquist2DEngine *engine, int id)
         } // case
         case SDL_MOUSEWHEEL:
         {
+#ifndef PRODUCTION
             if (engine->terminal.toggled) {
                 if (engine->event.wheel.y > 0) { // scroll up
                     engine->terminal.scroll--;
@@ -454,6 +463,7 @@ static void getKeyboardControlls(Nyquist2DEngine *engine, int id)
                     engine->terminal.scroll++;
                 }
             }
+#endif
             break;
         } // case
         case SDL_QUIT:
@@ -463,6 +473,7 @@ static void getKeyboardControlls(Nyquist2DEngine *engine, int id)
         } // case
         } // switch
     }
+#ifndef PRODUCTION
     if (terminal_key) {
         terminal_toggle(&engine->terminal, engine->window_rect.w,
                         engine->window_rect.h);
@@ -471,6 +482,7 @@ static void getKeyboardControlls(Nyquist2DEngine *engine, int id)
         terminal_updateKeys(&engine->terminal, engine->lua_state,
                             &engine->keyinfo);
     }
+#endif
 }
 
 static void getGamepadControlls(Nyquist2DEngine *engine, int id)
@@ -478,7 +490,9 @@ static void getGamepadControlls(Nyquist2DEngine *engine, int id)
     uint8_t *keystate = 0;
     engine->keyinfo.state = NULL;
     SDL_Keycode key = 0;
+#ifndef PRODUCTION
     bool terminal_key = false;
+#endif
     for (int i = 0; i < engine->inputs.inputInfo[id].gamepad_controls_length; ++i) {
         InputInfo *input = &engine->inputs.inputInfo[id];
         input->gamepad_controls[i].isPressed = \
@@ -506,10 +520,12 @@ static void getGamepadControlls(Nyquist2DEngine *engine, int id)
             {
                 engine->keyinfo.key = key;
                 engine->keyinfo.isDown = true;
+#ifndef PRODUCTION
                 if (key == SDLK_BACKQUOTE && keystate[SDL_SCANCODE_LCTRL]) {
                     terminal_key = true;
                 }
                 if (engine->terminal.toggled) break;
+#endif
                 break;
             } // case
             case SDL_KEYUP:
@@ -517,11 +533,14 @@ static void getGamepadControlls(Nyquist2DEngine *engine, int id)
                 engine->keyinfo.isDown = false;
                 engine->keyinfo.state = NULL;
                 engine->keyinfo.key = 0;
+#ifndef PRODUCTION
                 if (engine->terminal.toggled) break;
+#endif
                 break;
             } // case
             case SDL_MOUSEWHEEL:
             {
+#ifndef PRODUCTION
                 if (engine->terminal.toggled) {
                     if (engine->event.wheel.y > 0) { // scroll up
                         engine->terminal.scroll--;
@@ -530,6 +549,7 @@ static void getGamepadControlls(Nyquist2DEngine *engine, int id)
                         engine->terminal.scroll++;
                     }
                 }
+#endif
                 break;
             } // case
             case SDL_QUIT:
@@ -539,6 +559,7 @@ static void getGamepadControlls(Nyquist2DEngine *engine, int id)
             } // case
         }
     }
+#ifndef PRODUCTION
     if (terminal_key) {
         terminal_toggle(&engine->terminal, engine->window_rect.w,
                         engine->window_rect.h);
@@ -547,6 +568,7 @@ static void getGamepadControlls(Nyquist2DEngine *engine, int id)
         terminal_updateKeys(&engine->terminal, engine->lua_state,
                             &engine->keyinfo);
     }
+#endif
 }
 
 int luaGlobal_controlsUpdate(lua_State *L)
@@ -581,7 +603,11 @@ int luaGlobal_controlsUpdate(lua_State *L)
         if (engine->keyinfo.state) {
             hitBackSpace = engine->keyinfo.state[SDL_SCANCODE_BACKSPACE];
         }
+#ifndef PRODUCTION
         if ((strlen(str) <= 2 || hitSpace || hitBackSpace) && !engine->terminal.toggled
+#else
+        if ((strlen(str) <= 2 || hitSpace || hitBackSpace)
+#endif
             && str[0] != '`') {
             key[0] = str[0];
             if (hitBackSpace) {
@@ -821,8 +847,10 @@ int luaGlobal_drawUpdate(lua_State *L)
 
     screenElements_update(engine->update_elements, ei, engine->renderer, &rect);
 
+#ifndef PRODUCTION
     terminal_update(&engine->terminal, engine->lua_state, engine->renderer,
                     engine->window_scale);
+#endif
     SDL_RenderPresent(engine->renderer);
 
     fonts_reset(&engine->fonts);
@@ -831,9 +859,11 @@ int luaGlobal_drawUpdate(lua_State *L)
     rects_reset();
     lines_reset(&engine->lines);
 
+#ifndef PRODUCTION
     if (engine->hasFrameCap && (!engine->terminal.toggled)) {
         /* loops_end(&engine->loops, loop_id); */
     }  
+#endif
     return 0;
 }
 

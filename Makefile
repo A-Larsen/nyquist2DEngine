@@ -10,6 +10,10 @@ OUTPUT_ARGS = \
 	-o $(ENGINE)\
 	$(LIBS)
 
+ifdef PRODUCTION
+DEFINES := $(DEFINES) -D PRODUCTION
+endif
+
 ifdef EXTENSION
 start: options $(EXTENSION)
 endif
@@ -69,4 +73,4 @@ clean:
 uinstall: 
 	# remove all program files
 
-.PHONY: clean all install $(ENGINE) debug mapeditor
+.PHONY: clean all install $(ENGINE) debug mapeditor thing

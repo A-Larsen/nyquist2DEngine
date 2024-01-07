@@ -120,6 +120,11 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
 
     memcpy(engine->lua_path, lua_path, strlen(lua_path) + 1);
 
+#ifdef PRODUCTION
+    lua_pushboolean(engine->lua_state, true);
+    lua_setglobal(engine->lua_state, "PRODUCTION");
+#endif
+
     lua_pushnumber(engine->lua_state, SQLITE_INTEGER);
     lua_setglobal(engine->lua_state, "DB_INTEGER");
 

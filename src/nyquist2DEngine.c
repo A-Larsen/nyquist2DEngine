@@ -23,7 +23,6 @@ int main(int args, char **argv)
 {
     int argi = engine_handleOptions(args, argv);
 
-
     if (argv[argi] == NULL) {
         return 0;
     }
