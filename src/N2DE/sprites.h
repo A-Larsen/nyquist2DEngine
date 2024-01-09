@@ -176,23 +176,23 @@ void sprites_updateCrop(Sprites *sprites, SDL_Renderer *renderer,
     SDL_Rect *frame = &crop->frames[frame_number];
     ScreenElement *screenElement = &crop->screenElements[frame_number];
 
-    int w = frame->w;
-    int h = frame->h;
+    /* int w = frame->w; */
+    /* int h = frame->h; */
 
-/* } */
-    SDL_Rect rect1 = {
-        frame->x,
-        frame->y,
-        frame->w,
-        frame->h,
-    };
+/* /1* } *1/ */
+    /* SDL_Rect rect1 = { */
+    /*     frame->x, */
+    /*     frame->y, */
+    /*     frame->w, */
+    /*     frame->h, */
+    /* }; */
 
-    SDL_Rect rect2 = { 
-        0, 
-        0, 
-        frame->w,
-        frame->h,
-    };
+    /* SDL_Rect rect2 = { */ 
+    /*     0, */ 
+    /*     0, */ 
+    /*     frame->w, */
+    /*     frame->h, */
+    /* }; */
 
 
     screenElement->rotation = 0;
@@ -214,22 +214,22 @@ void sprites_updateCrop2(Sprites *sprites, SDL_Renderer *renderer,
     SDL_Rect *frame = &crop->frames[frame_number];
     ScreenElement *screenElement = &crop->screenElements[frame_number];
 
-    int w = frame->w;
-    int h = frame->h;
+    /* int w = frame->w; */
+    /* int h = frame->h; */
 
-    SDL_Rect rect1 = {
-        frame->x,
-        frame->y,
-        frame->w,
-        frame->h,
-    };
+    /* SDL_Rect rect1 = { */
+    /*     frame->x, */
+    /*     frame->y, */
+    /*     frame->w, */
+    /*     frame->h, */
+    /* }; */
 
-    SDL_Rect rect2 = { 
-        0, 
-        0, 
-        frame->w,
-        frame->h,
-    };
+    /* SDL_Rect rect2 = { */ 
+    /*     0, */ 
+    /*     0, */ 
+    /*     frame->w, */
+    /*     frame->h, */
+    /* }; */
 
     screenElement->rotation = 0;
     screenElement->position.x = position.x;
@@ -254,22 +254,22 @@ void sprites_updateCrop3(Sprites *sprites, SDL_Renderer *renderer,
     ScreenElement *screenElement = &crop->screenElements[frame_number];
     screenElement->zIndex = zIndex;
 
-    int w = frame->w;
-    int h = frame->h;
+    /* int w = frame->w; */
+    /* int h = frame->h; */
 
-    SDL_Rect rect1 = {
-        frame->x,
-        frame->y,
-        frame->w,
-        frame->h,
-    };
+    /* SDL_Rect rect1 = { */
+    /*     frame->x, */
+    /*     frame->y, */
+    /*     frame->w, */
+    /*     frame->h, */
+    /* }; */
 
-    SDL_Rect rect2 = { 
-        0, 
-        0, 
-        frame->w,
-        frame->h,
-    };
+    /* SDL_Rect rect2 = { */ 
+    /*     0, */ 
+    /*     0, */ 
+    /*     frame->w, */
+    /*     frame->h, */
+    /* }; */
 
     screenElement->rotation = 0;
     screenElement->position.x = position.x;
@@ -300,21 +300,21 @@ int sprites_animate(Sprites *sprites, SDL_Renderer *renderer,
     } else if ((int)frame_number < crop->count) {
         SDL_Rect *frame = &crop->frames[(int)frame_number];
         ScreenElement *screenElement = &crop->screenElements[(int)frame_number];
-        int w = frame->w;
-        int h = frame->h;
+        /* int w = frame->w; */
+        /* int h = frame->h; */
 
-        SDL_Rect rect1 = {
-            frame->x,
-            frame->y,
-            frame->w,
-            frame->h,
-        };
-        SDL_Rect rect2 = { 
-            0, 
-            0, 
-            frame->w,
-            frame->h,
-        };
+        /* SDL_Rect rect1 = { */
+        /*     frame->x, */
+        /*     frame->y, */
+        /*     frame->w, */
+        /*     frame->h, */
+        /* }; */
+        /* SDL_Rect rect2 = { */ 
+        /*     0, */ 
+        /*     0, */ 
+        /*     frame->w, */
+        /*     frame->h, */
+        /* }; */
 
 
         screenElement->position.x = position.x;

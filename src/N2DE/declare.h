@@ -37,13 +37,14 @@ typedef enum _SC_TYPES {
 } SC_TYPES;
 
 
-#if defined(_WIN32)
-#pragma pack(push, 1)
-typedef struct _ScreenElement
-#elif defined(__GNUC__)
-typedef struct __attribute__((__packed__)) _ScreenElement
-#endif
+/* #if defined(_WIN32) */
+/* #pragma pack(push, 1) */
+/* typedef struct _ScreenElement */
+/* #elif defined(__GNUC__) */
+/* typedef struct __attribute__((__packed__)) _ScreenElement */
+/* #endif */
 
+typedef struct _ScreenElement
 {
     SDL_Texture *texture;
     SDL_Surface *surface;
@@ -68,9 +69,9 @@ typedef struct __attribute__((__packed__)) _ScreenElement
     SDL_Color color;
 } ScreenElement;
 
-#if defined(_WIN32)
-#pragma pack(pop)
-#endif
+/* #if defined(_WIN32) */
+/* #pragma pack(pop) */
+/* #endif */
 
 
 typedef struct _Size {
@@ -115,7 +116,7 @@ void screenElements_update(ScreenElement **update_elements, uint16_t update_elem
                 /* skip_count++; */
                 continue;
             };
-            if (update_elements[j]->zIndex == i) {
+            if (zIndex == i) {
                 switch (update_elements[j]->type) {
                     case ELEMENT_IMAGE: 
                     case ELEMENT_SPRITE: 

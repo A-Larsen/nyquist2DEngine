@@ -35,7 +35,6 @@
 #include "memory.h"
 #include "sprites.h"
 #include "config.h"
-#include "players.h"
 
 #define CROP_VARIATION_COUNT 4
 
@@ -224,7 +223,8 @@ uint16_t world_read(World *world, const uint8_t map_index, SDL_Renderer *rendere
     uint16_t read = fread((void *)&world->map, size, 1, fp);
     char background_path[255];
     sprintf(background_path, RESPATH "/images/%s", world->map.background_path);
-    uint16_t images_id = images_newGroup(images);
+    /* uint16_t images_id = images_newGroup(images); */
+    /* images_newGroup(images); */
     /* world->backgorund_id = images_create(images, renderer, background_path, NULL, zIndex); */
     /* images_saveGroup(images, images_id); */
     SDL_Surface *surface = IMG_Load(background_path);
@@ -378,22 +378,23 @@ Collider * world_checkCollision(World *world, uint16_t id)
         world->collisions[id].is_hit = false;
         return &world->collisions[id];
     }
+    return NULL;
 }
 
 void world_updateQue(World *world, SDL_Renderer *renderer, Images *images,
-                     Sprites *sprites, Players *players, SDL_Point map_pos,
+                     Sprites *sprites,  SDL_Point map_pos,
                      SDL_Rect *window)
 {
     /* return; */
     if (!WORLD_UPDATE) return;
     /* if (world->map.objects_count == 0) return; */
-    SDL_Point apos = {
-        map_pos.x - players->playerInfo[0].position.x,
-        map_pos.y + players->playerInfo[0].position.y,
-    };
+    /* SDL_Point apos = { */
+    /*     map_pos.x , */
+    /*     map_pos.y, */
+    /* }; */
     SDL_Rect r = {
-        .x = apos.x * WORLD_SCALE,
-        .y = apos.y * WORLD_SCALE,
+        .x = map_pos.x * WORLD_SCALE,
+        .y = map_pos.y * WORLD_SCALE,
         .w = world->map.size.w * WORLD_SCALE,
         .h = world->map.size.h * WORLD_SCALE,
     };
@@ -419,8 +420,8 @@ void world_updateQue(World *world, SDL_Renderer *renderer, Images *images,
         /*     .h = (object->hitbox.h) * WORLD_SCALE, */
         /* }; */
         SDL_Point position = {
-            ((object->position.x * world->map.grid) * WORLD_SCALE) + (apos.x * WORLD_SCALE),
-            ((object->position.y * world->map.grid) * WORLD_SCALE) + (apos.y * WORLD_SCALE),
+            ((object->position.x * world->map.grid) * WORLD_SCALE) + (map_pos.x * WORLD_SCALE),
+            ((object->position.y * world->map.grid) * WORLD_SCALE) + (map_pos.y * WORLD_SCALE),
         };
         Size size = {
             .w = object->size.w * WORLD_SCALE,

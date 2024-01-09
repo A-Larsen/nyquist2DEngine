@@ -56,8 +56,11 @@ build_mapeditor_debug: ./src/N2DE/*h ./src/mapeditor.c
 		-o mapeditor\
 		$(LIBS)
 
-# example: make EXTENSION="libaudio"
 $(EXTENSION): $(EXTENSION).c
+	@eval "./scripts/setup_extension $@"
+	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
+
+all_extensions: lib*.c
 	@eval "./scripts/setup_extension $@"
 	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
 

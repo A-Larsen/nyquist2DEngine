@@ -94,7 +94,7 @@ int images_create(Images *images, SDL_Renderer *renderer,
     }
 
     screenElement->surface = surface;
-    SDL_Rect *r = &screenElement->data.rect;
+    /* SDL_Rect *r = &screenElement->data.rect; */
 
     screenElement->rotation = 0;
     screenElement->zIndex = zIndex;
