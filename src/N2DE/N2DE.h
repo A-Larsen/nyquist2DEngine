@@ -234,6 +234,7 @@ void engine_run(Nyquist2DEngine *engine)
 
 void engine_destroy(Nyquist2DEngine *engine)
 {
+    printf("destroying\n");
     for(int i = 0; i < engine->inputs.count; ++i){
         if (engine->inputs.inputInfo[i].controller_id > -1) {
             SDL_GameControllerClose(engine->inputs.inputInfo[i].controller);
@@ -250,10 +251,13 @@ void engine_destroy(Nyquist2DEngine *engine)
     world_free(&engine->world);
     /* lua_freeSchema(engine->lua_state); */
     lua_close(engine->lua_state);
-    /* sprites_free(&engine->sprites); */
+    sprites_free(&engine->sprites);
     loops_free(&engine->loops);
-    /* audio_quit(&engine->audio); */
+    audio_quit(&engine->audio);
     /* circles_free(&engine->circles); */
+#ifndef PRODUCTION
+    terminal_free(&engine->terminal);
+#endif
     rects_free();
     lines_free(&engine->lines);
     TTF_Quit();
