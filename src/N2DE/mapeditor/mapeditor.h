@@ -28,6 +28,7 @@
 
 #include "../../lua5.3/lua.h"
 #include "../../lua5.3/lauxlib.h"
+#include "../../lua5.3/lualib.h"
 #include "../declare.h"
 #include "../memory.h"
 #include "../sprites.h"
@@ -219,6 +220,7 @@ static bool _parse_combo(char *alias, char keyComb[2][50])
 void mapeditor_readConfigFile(MapEditor *mapeditor, char *file)
 {
     mapeditor->lua_state = luaL_newstate();
+    luaL_openlibs(mapeditor->lua_state);
     lua_State *L = mapeditor->lua_state;
     if (luaL_dofile(L, file) != LUA_OK) {
         N2DE_ERROR("Error reading cofig\n");
