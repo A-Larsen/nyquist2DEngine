@@ -1,5 +1,5 @@
-#include "./src/lua5.3/lua.h"
-#include "./src/lua5.3/lauxlib.h"
+#include "./src/lua5.4/lua.h"
+#include "./src/lua5.4/lauxlib.h"
 #include "./src/N2DE/N2DE.h"
 
 int libimages_create(lua_State *L)

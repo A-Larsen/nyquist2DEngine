@@ -3,9 +3,9 @@
 
 #include <stdbool.h>
 
-#include "../../lua5.3/lua.h"
-#include "../../lua5.3/lauxlib.h"
-#include "../../lua5.3/lualib.h"
+#include "../../lua5.4/lua.h"
+#include "../../lua5.4/lauxlib.h"
+#include "../../lua5.4/lualib.h"
 #include "../../SDL2/SDL.h"
 #include "../../SDL2/SDL_ttf.h"
 
