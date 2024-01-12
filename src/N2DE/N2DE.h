@@ -146,10 +146,6 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
     lua_pushnumber(engine->lua_state, SQLITE_TEXT_UNIQUE);
     lua_setglobal(engine->lua_state, "DB_TEXT_UNIQUE");
 
-    /* lua_pushnil(engine->lua_state); */
-    /* lua_setglobal(engine->lua_state, "key"); */
-
-
     /* lui */
     lua_newtable(engine->lua_state);
 
@@ -175,22 +171,6 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
     lua_pushboolean(engine->lua_state, false);
     lua_settable(engine->lua_state, -3); // nyq
 
-    /* luaF_newFuncsTable(engine->lua_state, "text", luaFunctions_text); */
-    /* lua_settable(engine->lua_state, -3); // nyq */
-
-    /* luaF_newFuncsTable(engine->lua_state, "images", luaFunctions_images); */
-    /* lua_settable(engine->lua_state, -3); // nyq */
-
-    /* luaF_newFuncsTable(engine->lua_state, "database", luaFunctions_database); */
-    /* lua_settable(engine->lua_state, -3); // nyq */
-                                         //
-    /* luaF_newFuncsTable(engine->lua_state, "sprites", luaFunctions_sprites); */
-    /* lua_settable(engine->lua_state, -3); // nyq */
-
-    /* luaF_newFuncsTable(engine->lua_state, "loops", luaFunctions_loops); */
-    /* lua_settable(engine->lua_state, -3); // nyq */
-
-
     luaF_newFuncsTable(engine->lua_state, "world", luaFunctions_world);
     lua_settable(engine->lua_state, -3); // nyq
                                          //
@@ -203,8 +183,6 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
     luaF_newFuncsTable(engine->lua_state, "rects", luaFunctions_rects);
     lua_settable(engine->lua_state, -3); // nyq
 
-    /* luaF_newFuncsTable(engine->lua_state, "formats", luaFunctions_formats); */
-    /* lua_settable(engine->lua_state, -3); // nyq */
 
 
     lua_setglobal(engine->lua_state, "nyq");
@@ -242,7 +220,6 @@ void engine_destroy(Nyquist2DEngine *engine)
     }
     SDL_DestroyRenderer(engine->renderer);
     fonts_quit(&engine->fonts);
-    formats_quit();
     fonts_quit(&engine->format_strings);
     images_quit(&engine->images);
     database_quit(&engine->database);

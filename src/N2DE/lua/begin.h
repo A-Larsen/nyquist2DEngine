@@ -27,7 +27,6 @@
 #endif
 #include "../rects.h"
 #include "../lines.h"
-#include "../formats.h"
 #include "../inputs.h"
 #include "../players.h"
 
