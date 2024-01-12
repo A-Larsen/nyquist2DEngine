@@ -60,11 +60,6 @@ $(EXTENSION): $(EXTENSION).c
 	@eval "./scripts/setup_extension $@"
 	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
 
-all_extensions: lib*.c
-	@eval "./scripts/setup_extension $@"
-	$(CC) $^ -shared $(DEFINES) $(CFLAGS) -o ./extensions/$@.dll $(LIBS)
-
-
 $(ENGINE): options build
 debug: build_debug
 mapeditor: build_mapeditor
