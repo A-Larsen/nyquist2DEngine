@@ -23,8 +23,8 @@
 
 #include "begin.h"
 
-bool WORLD_UPDATE = false;
-float WORLD_SCALE = 1;
+bool WORLD_UPDATE[4] = {false, false, false, false};
+float WORLD_SCALE[4] = {1, 1, 1, 1};
 
 int luaWorld_init(lua_State *L)
 {
@@ -32,8 +32,10 @@ int luaWorld_init(lua_State *L)
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
 
-    char *spritesheet = (char *)luaL_checkstring(L, 1);
-    char *world = (char *)luaL_checkstring(L, 2);
+    int num = (int)luaL_checknumber(L, 1);
+    char *spritesheet = (char *)luaL_checkstring(L, 2);
+    char *world = (char *)luaL_checkstring(L, 3);
+
     char spritesheet_path[255];
     sprintf(spritesheet_path, RESPATH "/images/%s", spritesheet);
     Size size = {.w = 1, .h = 1};
@@ -43,7 +45,8 @@ int luaWorld_init(lua_State *L)
     char world_path[255];
     sprintf(world_path, RESPATH "/data/%s/", world);
 
-    world_init(&engine->world, world_path, id);
+    world_init(&engine->worlds[num], world_path, id);
+    /* engine->worlds[num].int = true; */
     return 0;
 }
 
@@ -51,9 +54,10 @@ int luaWorld_read(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
-    int id = (int)luaL_checknumber(L, 1);
-    int zIndex = (int)luaL_checknumber(L, 2);
-    uint16_t group_id = world_read(&engine->world, id, engine->renderer, &engine->images, &engine->sprites, zIndex);
+    int num = (int)luaL_checknumber(L, 1);
+    int id = (int)luaL_checknumber(L, 2);
+    int zIndex = (int)luaL_checknumber(L, 3);
+    uint8_t group_id = world_read(&engine->worlds[num], id, engine->renderer, &engine->images, &engine->sprites, zIndex);
     return group_id;
 }
 
@@ -62,15 +66,17 @@ int luaWorld_print(lua_State *L)
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
 
-    world_print(&engine->world);
+    int num = (int)luaL_checknumber(L, 1);
+    world_print(&engine->worlds[num]);
     return 0;
 }
 
 int luaWorld_update(lua_State *L)
 {
-    float scale = (float)luaL_checknumber(L, 1);
-    WORLD_UPDATE = true;
-    WORLD_SCALE = scale;
+    int num = (int)luaL_checknumber(L, 1);
+    float scale = (float)luaL_checknumber(L, 2);
+    WORLD_UPDATE[num] = true;
+    WORLD_SCALE[num] = scale;
 
     /* world_update(&engine->world, engine->renderer, &engine->sprites); */
     return 0;
@@ -80,14 +86,15 @@ int luaWorld_addCollisionCheck(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
+    int num = (int)luaL_checknumber(L, 1);
     SDL_Point p;
     Size s;
-    lua_topoint(L, 1, &p);
-    lua_tosize(L, 2, &s);
+    lua_topoint(L, 2, &p);
+    lua_tosize(L, 3, &s);
     SDL_Rect r = {
         p.x, p.y, s.w, s.h
     };
-    uint16_t i = world_addCollisionCheck(&engine->world, &r);
+    uint16_t i = world_addCollisionCheck(&engine->worlds[num], &r);
     lua_pushnumber(L, i);
     return 1;
 }
@@ -96,9 +103,10 @@ int luaWorld_checkCollision(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
-    uint16_t id = (uint16_t)luaL_checknumber(L, 1);
+    int num = (int)luaL_checknumber(L, 1);
+    uint16_t id = (uint16_t)luaL_checknumber(L, 2);
     Collider *collider = NULL;
-    collider = world_checkCollision(&engine->world, id);
+    collider = world_checkCollision(&engine->worlds[num], id);
 
     lua_newtable(L);
     if (!collider) {
@@ -167,7 +175,8 @@ int luaWorld_getGrid(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
-    uint8_t grid = engine->world.map.grid;
+    int num = (int)luaL_checknumber(L, 1);
+    uint8_t grid = engine->worlds[num].map.grid;
     lua_pushnumber(L, grid);
     return 1;
 }
@@ -176,7 +185,18 @@ int luaWorld_free(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
-    world_free(&engine->world);
+    int num = (int)luaL_checknumber(L, 1);
+    world_free(&engine->worlds[num]);
+    return 0;
+}
+
+int luaWorld_reset(lua_State *L)
+{
+    Nyquist2DEngine *engine = NULL;
+    LUA_GETENGINE(L, engine);
+    for (int i = 0; i < 4; ++i) {
+        engine->worlds[i].exists = false;
+    }
     return 0;
 }
 
@@ -189,6 +209,7 @@ const struct luaL_Reg luaFunctions_world[] = {
     {"addCollisionCheck", luaWorld_addCollisionCheck},
     {"checkCollision", luaWorld_checkCollision},
     {"getGrid", luaWorld_getGrid},
+    {"reset", luaWorld_reset},
     {"free", luaWorld_free},
     /* {"isCollidable", luaWorld_isCollidable}, */
     {NULL, NULL}

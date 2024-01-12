@@ -84,8 +84,8 @@ Map;
 #endif
 
 
-extern bool WORLD_UPDATE;
-extern float WORLD_SCALE;
+extern bool WORLD_UPDATE[4];
+extern float WORLD_SCALE[4];
 
 #define MAX_COLLISION_CHECK 20
 
@@ -108,11 +108,8 @@ typedef struct _FrontObject {
 typedef struct _World
 {
     Object *objects;
-    /* Object *front_objects; */
     uint16_t front_objects_count;
     FrontObject *front_objects;
-    /* uint16_t *front_objects; */
-    /* uint16_t *front_objects_id; */
     char path[500];
     Map map;
     uint16_t spritesheet_id;
@@ -120,7 +117,6 @@ typedef struct _World
     uint16_t crop_id_end;
     uint8_t userdata[32];
     SDL_Rect collision_checks[MAX_COLLISION_CHECK];
-    /* bool collisions[MAX_COLLISION_CHECK]; */
     Collider collisions[MAX_COLLISION_CHECK];
     uint16_t collision_count;
     bool exists;
@@ -381,22 +377,22 @@ Collider * world_checkCollision(World *world, uint16_t id)
     return NULL;
 }
 
-void world_updateQue(World *world, SDL_Renderer *renderer, Images *images,
+void world_updateQue(World *world, uint8_t id, SDL_Renderer *renderer, Images *images,
                      Sprites *sprites,  SDL_Point map_pos,
                      SDL_Rect *window)
 {
     /* return; */
-    if (!WORLD_UPDATE) return;
+    if (!WORLD_UPDATE[id]) return;
     /* if (world->map.objects_count == 0) return; */
     /* SDL_Point apos = { */
     /*     map_pos.x , */
     /*     map_pos.y, */
     /* }; */
     SDL_Rect r = {
-        .x = map_pos.x * WORLD_SCALE,
-        .y = map_pos.y * WORLD_SCALE,
-        .w = world->map.size.w * WORLD_SCALE,
-        .h = world->map.size.h * WORLD_SCALE,
+        .x = map_pos.x * WORLD_SCALE[id],
+        .y = map_pos.y * WORLD_SCALE[id],
+        .w = world->map.size.w * WORLD_SCALE[id],
+        .h = world->map.size.h * WORLD_SCALE[id],
     };
     memcpy(&world->rect, &r, sizeof(SDL_Rect));
 
@@ -420,12 +416,12 @@ void world_updateQue(World *world, SDL_Renderer *renderer, Images *images,
         /*     .h = (object->hitbox.h) * WORLD_SCALE, */
         /* }; */
         SDL_Point position = {
-            ((object->position.x * world->map.grid) * WORLD_SCALE) + (map_pos.x * WORLD_SCALE),
-            ((object->position.y * world->map.grid) * WORLD_SCALE) + (map_pos.y * WORLD_SCALE),
+            ((object->position.x * world->map.grid) * WORLD_SCALE[id]) + (map_pos.x * WORLD_SCALE[id]),
+            ((object->position.y * world->map.grid) * WORLD_SCALE[id]) + (map_pos.y * WORLD_SCALE[id]),
         };
         Size size = {
-            .w = object->size.w * WORLD_SCALE,
-            .h = object->size.h * WORLD_SCALE
+            .w = object->size.w * WORLD_SCALE[id],
+            .h = object->size.h * WORLD_SCALE[id]
         };
 
         SDL_Rect x = {
@@ -444,10 +440,10 @@ void world_updateQue(World *world, SDL_Renderer *renderer, Images *images,
         bool hit_bottom = false;
         for (uint16_t j = 0; j < world->collision_count; ++j) {
             SDL_Rect hitbox = {
-                position.x + ((object->hitbox.x * world->map.grid) * WORLD_SCALE),
-                position.y + ((object->hitbox.y * world->map.grid) * WORLD_SCALE),
-                object->hitbox.w * world->map.grid * WORLD_SCALE,
-                object->hitbox.h * world->map.grid * WORLD_SCALE,
+                position.x + ((object->hitbox.x * world->map.grid) * WORLD_SCALE[id]),
+                position.y + ((object->hitbox.y * world->map.grid) * WORLD_SCALE[id]),
+                object->hitbox.w * world->map.grid * WORLD_SCALE[id],
+                object->hitbox.h * world->map.grid * WORLD_SCALE[id],
             };
             if (SDL_HasIntersection(&world->collision_checks[j], &hitbox)) {
                 world->collisions[j].is_hit = true;
@@ -508,7 +504,7 @@ void world_updateQue(World *world, SDL_Renderer *renderer, Images *images,
                 /* size.h = 0; */
                 Size s = {
                     .w = size.w,
-                    .h = object->hitbox.y * world->map.grid * WORLD_SCALE
+                    .h = object->hitbox.y * world->map.grid * WORLD_SCALE[id]
                 };
                 sprites_updateCrop2(sprites, renderer, position, s,
                         0, world->spritesheet_id, front_object->crop_id);
@@ -517,7 +513,7 @@ void world_updateQue(World *world, SDL_Renderer *renderer, Images *images,
         }
     }
     /* printf("world skip_count: %u\n", skip_count); */
-    WORLD_UPDATE = false;
+    WORLD_UPDATE[id] = false;
 }
 
 void world_init(World *world, char *path, uint16_t spritesheet_id)

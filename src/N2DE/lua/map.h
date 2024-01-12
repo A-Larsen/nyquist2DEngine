@@ -25,12 +25,13 @@ int lua_MapSet(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
+    int num = (int)luaL_checknumber(L, 1);
     SDL_Point point;
-    lua_topoint(L, 1, &point);
+    lua_topoint(L, 2, &point);
     /* int x = (int)luaL_checknumber(L, 1); */
     /* int y = (int)luaL_checknumber(L, 2); */
-    engine->world.map.position.x = point.x;
-    engine->world.map.position.y = point.y;
+    engine->worlds[num].map.position.x = point.x;
+    engine->worlds[num].map.position.y = point.y;
     
     return 0;
     

@@ -112,7 +112,6 @@ void engine_init(Nyquist2DEngine *engine, const char *lua_path)
     images_init(&engine->images);
     loops_init(&engine->loops);
 
-
     engine->lua_state = luaL_newstate();
     engine->initialized = false;
     engine->hasFrameCap = true;
@@ -225,7 +224,9 @@ void engine_destroy(Nyquist2DEngine *engine)
     database_quit(&engine->database);
     SDL_DestroyWindow(engine->window);
     SDL_Quit();
-    world_free(&engine->world);
+    for (int i = 0; i < 4; ++i) {
+        world_free(&engine->worlds[i]);
+    }
     /* lua_freeSchema(engine->lua_state); */
     lua_close(engine->lua_state);
     sprites_free(&engine->sprites);

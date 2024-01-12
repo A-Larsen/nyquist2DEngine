@@ -835,8 +835,10 @@ int luaGlobal_drawUpdate(lua_State *L)
         .w = engine->window_rect.w,
         .h = engine->window_rect.h,
     };
-    world_updateQue(&engine->world, engine->renderer, &engine->images, 
-                    &engine->sprites, engine->world.map.position, &rect);
+    for (int i = 0; i < 4; ++i) {
+        world_updateQue(&engine->worlds[i], i, engine->renderer, &engine->images, 
+                        &engine->sprites, engine->worlds[i].map.position, &rect);
+    }
     images_updateQue(&engine->images, engine->update_elements, &ei);
     sprites_updateQue(&engine->sprites, engine->update_elements, &ei);
     fonts_updateQue(&engine->fonts, engine->update_elements, &ei);
