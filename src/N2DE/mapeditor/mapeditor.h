@@ -43,11 +43,11 @@
 
 #define SDL_main main
 
-float WORLD_SCALE;
+bool WORLD_UPDATE[4] = {true, false, false, false};
+float WORLD_SCALE[4] = {1, 1, 1, 1};
 
 #define OBJECT_F_VISIBLE (1 << 0)
 #define OBJECT_F_NOTVISIBLE (~(1 << 0))
-bool WORLD_UPDATE = true;
 
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #define MAPEDITOR_DESTRUCTOR(mapeditor) \
