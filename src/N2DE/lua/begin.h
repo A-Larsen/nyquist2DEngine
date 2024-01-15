@@ -48,7 +48,7 @@ typedef struct _Nyquist2DEngine {
     Fonts format_strings;
     Fonts fonts;
     /* World world; */
-    World worlds[5];
+    World worlds[4];
     Images images;
     /* Player player; */
     SDL_Renderer *renderer;

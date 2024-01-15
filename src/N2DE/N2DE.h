@@ -224,7 +224,7 @@ void engine_destroy(Nyquist2DEngine *engine)
     database_quit(&engine->database);
     SDL_DestroyWindow(engine->window);
     SDL_Quit();
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 4; ++i) {
         world_free(&engine->worlds[i]);
     }
     /* lua_freeSchema(engine->lua_state); */
