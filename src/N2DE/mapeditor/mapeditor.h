@@ -43,8 +43,8 @@
 
 #define SDL_main main
 
-bool WORLD_UPDATE[5] = {true, false, false, false};
-float WORLD_SCALE[5] = {1, 1, 1, 1};
+bool WORLD_UPDATE[5] = {true, false, false, false, false};
+float WORLD_SCALE[5] = {1, 1, 1, 1, 1};
 
 #define OBJECT_F_VISIBLE (1 << 0)
 #define OBJECT_F_NOTVISIBLE (~(1 << 0))
@@ -475,11 +475,11 @@ void mapeditor_addObject(MapEditor *mapeditor, char *type, SDL_Point *position,
     memcpy(&object->position, position, sizeof(SDL_Point));
     object->is_collidable = typeAndCrop->is_collidable;
     memcpy(&object->hitbox, &typeAndCrop->hitbox, sizeof(SDL_Rect));
-    printf("hitbox: %d, %d, %d, %d\n", typeAndCrop->hitbox.x, typeAndCrop->hitbox.y, typeAndCrop->hitbox.w, typeAndCrop->hitbox.h);
+    /* printf("hitbox: %d, %d, %d, %d\n", typeAndCrop->hitbox.x, typeAndCrop->hitbox.y, typeAndCrop->hitbox.w, typeAndCrop->hitbox.h); */
     object->is_visable = typeAndCrop->is_visable;
     memcpy(&object->size, size, sizeof(Size));
-    printf("realtive size: %d, %d \n", size->w, size->h);
-    printf("realtive position: %d, %d \n", position->x, position->y);
+    /* printf("realtive size: %d, %d \n", size->w, size->h); */
+    /* printf("realtive position: %d, %d \n", position->x, position->y); */
     memcpy(&object->crops, crops, sizeof(SDL_Rect) * CROP_VARIATION_COUNT);
 
     /* if (add_to_world) { */

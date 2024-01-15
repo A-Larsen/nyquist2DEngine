@@ -168,21 +168,21 @@ void world_save(World *world, const uint8_t map_index)
     if (!fp) {
         N2DE_ERROR("saveMap() error: fopen returned NULL (%d)\n", errno);
     }
-    printf("background image: %s\n", world->map.background_path);
+    /* printf("background image: %s\n", world->map.background_path); */
     for (int i = 0; i < world->map.objects_count; ++i) {
-        printf("%d | writing type: %s\n", i, world->objects[i].type);
+        /* printf("%d | writing type: %s\n", i, world->objects[i].type); */
         /* printf("%d | writing position: %d, %d\n", i, world->objects[i].position.x, world->objects[i].position.y); */
-        printf("%d | writing size: %d, %d\n", i, world->objects[i].size.w, world->objects[i].size.h);
-                printf("%d | writing hitbox: %d, %d, %d, %d\n", 
-                        i,
-                        world->objects[i].hitbox.x,
-                        world->objects[i].hitbox.y,
-                        world->objects[i].hitbox.w,
-                        world->objects[i].hitbox.h
-                );
+        /* printf("%d | writing size: %d, %d\n", i, world->objects[i].size.w, world->objects[i].size.h); */
+                /* printf("%d | writing hitbox: %d, %d, %d, %d\n", */ 
+                /*         i, */
+                /*         world->objects[i].hitbox.x, */
+                /*         world->objects[i].hitbox.y, */
+                /*         world->objects[i].hitbox.w, */
+                /*         world->objects[i].hitbox.h */
+                /* ); */
         uint16_t written = fwrite((void *)&world->objects[i], sizeof(Object),
                 1, fp);
-        printf("written: %d\n", written);
+        /* printf("written: %d\n", written); */
     }
     fclose(fp);
 }
@@ -296,7 +296,7 @@ uint16_t world_read(World *world, const uint8_t map_index, SDL_Renderer *rendere
         }
     }
     fclose(fp);
-    printf("world read\n");
+    /* printf("world read\n"); */
     return size;
     /* return images_id; */
 }

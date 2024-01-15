@@ -23,8 +23,8 @@
 
 #include "begin.h"
 
-bool WORLD_UPDATE[5] = {false, false, false, false};
-float WORLD_SCALE[5] = {1, 1, 1, 1};
+bool WORLD_UPDATE[5] = {false, false, false, false, false};
+float WORLD_SCALE[5] = {1, 1, 1, 1, 1};
 
 int luaWorld_init(lua_State *L)
 {
