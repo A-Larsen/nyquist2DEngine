@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+for lib in $(find . -name "lib*.c" | cut -d/ -f2 | cut -d. -f1); do
+    make EXTENSION="$lib"
+done
