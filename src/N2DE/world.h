@@ -84,8 +84,8 @@ Map;
 #endif
 
 
-extern bool WORLD_UPDATE[5];
-extern float WORLD_SCALE[5];
+extern bool WORLD_UPDATE[9];
+extern float WORLD_SCALE[9];
 
 #define MAX_COLLISION_CHECK 20
 

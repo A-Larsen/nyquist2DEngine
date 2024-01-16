@@ -43,8 +43,28 @@
 
 #define SDL_main main
 
-bool WORLD_UPDATE[5] = {true, false, false, false, false};
-float WORLD_SCALE[5] = {1, 1, 1, 1, 1};
+bool WORLD_UPDATE[9] = {
+    [0] = true, 
+    [1] = false, 
+    [2] = false, 
+    [3] = false, 
+    [4] = false,
+    [5] = false,
+    [6] = false,
+    [7] = false,
+    [8] = false,
+};
+float WORLD_SCALE[9] = {
+    [0] = 1, 
+    [1] = 1, 
+    [2] = 1, 
+    [3] = 1, 
+    [4] = 1,
+    [5] = 1,
+    [6] = 1,
+    [7] = 1,
+    [8] = 1,
+};
 
 #define OBJECT_F_VISIBLE (1 << 0)
 #define OBJECT_F_NOTVISIBLE (~(1 << 0))
