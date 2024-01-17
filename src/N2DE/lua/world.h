@@ -70,6 +70,49 @@ int luaWorld_init(lua_State *L)
     return 0;
 }
 
+int luaWorld_getObjects(lua_State *L)
+{
+    Nyquist2DEngine *engine = NULL;
+    LUA_GETENGINE(L, engine);
+
+    int num = (int)luaL_checknumber(L, 1);
+    World *world = &engine->worlds[num];
+
+    lua_newtable(L);
+    for (int i = 0; i < world->map.objects_count; ++i) {
+        Object *object = &engine->worlds[num].objects[i];
+
+        lua_pushnumber(L, i);
+
+        lua_newtable(L);
+
+        lua_pushstring(L, "type");
+        lua_pushstring(L, object->type);
+        lua_settable(L, -3);
+
+        lua_pushstring(L, "is_visable");
+        lua_pushboolean(L, object->is_visable);
+        lua_settable(L, -3);
+
+        lua_pushstring(L, "is_collidable");
+        lua_pushboolean(L, object->is_collidable);
+        lua_settable(L, -3);
+
+        lua_pushstring(L, "is_visable");
+        lua_pushboolean(L, object->is_visable);
+        lua_settable(L, -3);
+
+        lua_pushstring(L, "was_collected");
+        lua_pushboolean(L, object->wasCollected);
+        lua_settable(L, -3);
+
+
+        lua_settable(L, -3);
+    }
+
+    return 1;
+}
+
 int luaWorld_read(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
@@ -229,6 +272,7 @@ const struct luaL_Reg luaFunctions_world[] = {
     {"addCollisionCheck", luaWorld_addCollisionCheck},
     {"checkCollision", luaWorld_checkCollision},
     {"getGrid", luaWorld_getGrid},
+    {"getObjects", luaWorld_getObjects},
     {"reset", luaWorld_reset},
     {"free", luaWorld_free},
     /* {"isCollidable", luaWorld_isCollidable}, */
