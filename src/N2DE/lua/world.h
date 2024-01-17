@@ -106,6 +106,26 @@ int luaWorld_getObjects(lua_State *L)
         lua_pushboolean(L, object->wasCollected);
         lua_settable(L, -3);
 
+        lua_pushstring(L, "position");
+        lua_newtable(L);
+        lua_pushstring(L, "x");
+        lua_pushnumber(L, object->position.x);
+        lua_settable(L, -3);
+        lua_pushstring(L, "y");
+        lua_pushnumber(L, object->position.y);
+        lua_settable(L, -3);
+        lua_settable(L, -3);
+
+        lua_pushstring(L, "size");
+        lua_newtable(L);
+        lua_pushstring(L, "w");
+        lua_pushnumber(L, object->size.w);
+        lua_settable(L, -3);
+        lua_pushstring(L, "h");
+        lua_pushnumber(L, object->size.h);
+        lua_settable(L, -3);
+        lua_settable(L, -3);
+
 
         lua_settable(L, -3);
     }
