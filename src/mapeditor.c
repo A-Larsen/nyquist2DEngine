@@ -8,14 +8,16 @@
 /* #define OBJECT_COUNT 5 */
 int main(int argc, char **argv)
 {
-    if (argc != 3) {
+    if (argc != 4) {
         N2DE_ERROR("not enough argumets\n");
         return 1;
     }
     MapEditor mapeditor;
     int map_id;
-    sscanf(argv[2], "%d", &map_id);
-    mapeditor_init(&mapeditor, argv[1], map_id);
+    sscanf(argv[3], "%d", &map_id);
+
+    mapeditor_init(&mapeditor, argv[1], argv[2], map_id);
+
 
     while (!mapeditor.quit) {
         mapeditor_clear(&mapeditor);

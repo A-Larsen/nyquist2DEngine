@@ -420,11 +420,12 @@ void mapeditor_readConfigFile(MapEditor *mapeditor, char *file)
         i++;
         lua_pop(L, 1);
     }
-    lua_getglobal(L, "background_image");
-    char *background_file = (char *)lua_tostring(L, -1);
-    memset(mapeditor->background_image_file, 0, 50);
-    memcpy(mapeditor->background_image_file, background_file,
-           strlen(background_file));
+    /* lua_getglobal(L, "background_image"); */
+
+    /* char *background_file = (char *)lua_tostring(L, -1); */
+    /* memset(mapeditor->background_image_file, 0, 50); */
+    /* memcpy(mapeditor->background_image_file, background_file, */
+    /*        strlen(background_file)); */
 
     lua_close(mapeditor->lua_state);
 }
@@ -507,7 +508,7 @@ void mapeditor_addObject(MapEditor *mapeditor, char *type, SDL_Point *position,
     /* } */
 }
 
-void mapeditor_init(MapEditor *mapeditor, char *file, int map_id)
+void mapeditor_init(MapEditor *mapeditor, char *file, const char *background_image, int map_id)
 {
     if (TTF_Init() == -1) {
         N2DE_ERROR(TTF_GetError());
@@ -518,6 +519,8 @@ void mapeditor_init(MapEditor *mapeditor, char *file, int map_id)
         exit(1);
     }
     memset(mapeditor, 0, sizeof(MapEditor));
+    memset(mapeditor->background_image_file, 0, 50);
+    memcpy(mapeditor->background_image_file, background_image, strlen(background_image));
 
     MAPEDITOR_DESTRUCTOR(mapeditor);
     mapeditor->update_elements_count = 0;
