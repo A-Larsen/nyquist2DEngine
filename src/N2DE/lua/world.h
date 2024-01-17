@@ -82,7 +82,7 @@ int luaWorld_getObjects(lua_State *L)
     for (int i = 0; i < world->map.objects_count; ++i) {
         Object *object = &engine->worlds[num].objects[i];
 
-        lua_pushnumber(L, i);
+        lua_pushnumber(L, i + 1);
 
         lua_newtable(L);
 
