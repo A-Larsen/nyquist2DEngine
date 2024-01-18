@@ -82,6 +82,12 @@ int luaWorld_addObject(lua_State *L)
 
     if (lua_istable(L, 2) == NULL) return 0;
 
+    lua_getfield(L, 2, "type");
+    const char *type = luaL_checkstring(L, -1);
+    memset(object.type, 0, 25);
+    memcpy(object.type, type, strlen(type));
+    lua_pop(L, 1); // position
+
     lua_getfield(L, 2, "position");
     lua_topoint(L, -1, &object.position);
     lua_pop(L, 1); // position
@@ -116,8 +122,34 @@ int luaWorld_addObject(lua_State *L)
         }
     }
     lua_pop(L, 1); // crops
-                   //
-    world_addObject(world, &object);
+
+    uint8_t zIndex = 0;
+    int i = world_addObject(world, &object);
+
+        world->objects[i].crop_id = \ 
+            sprites_addCrops(&engine->sprites, engine->renderer, world->spritesheet_id, world->objects[i].type,
+                             world->objects[i].crops, CROP_VARIATION_COUNT, zIndex);
+        SDL_Rect back = {
+            object.crops[0].x,
+            object.crops[0].y,
+            object.crops[0].w,
+            object.crops[0].h,
+        };
+        SDL_Rect front = {
+            object.crops[0].x,
+            object.crops[0].y,
+            object.crops[0].w,
+            object.hitbox.y,
+        };
+        if (!SDL_RectEquals(&front, &back) && object.is_visable) {
+            uint16_t j = world->front_objects_count++;
+            MEMRES(world->front_objects, sizeof(FrontObject) * world->front_objects_count);
+            world->front_objects[j].crop_id = sprites_addCrops(&engine->sprites, engine->renderer, 
+                    world->spritesheet_id, object.type, &front,
+                    1, zIndex + 2);
+            world->front_objects[j].object_id = i;
+            memcpy(&world->front_objects[j].rect, &front, sizeof(SDL_Rect));
+        }
 
     return 0;
 }

@@ -510,11 +510,12 @@ void world_init(World *world, char *path, uint16_t spritesheet_id)
     world->backgroundTexture = NULL;
 }
 
-void world_addObject(World *world, Object *object)
+uint16_t world_addObject(World *world, Object *object)
 {
     uint16_t i = world->map.objects_count++;
     MEMRES(world->objects, sizeof(Object) * world->map.objects_count);
     memcpy(&world->objects[i], object, sizeof(Object));
+    return i;
 }
 
 void world_changeObject(World *world, uint16_t id, Object *object)
