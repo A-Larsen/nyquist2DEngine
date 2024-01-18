@@ -14,7 +14,7 @@ typedef struct _update_data {
     char *sql;
 } _update_data;
 
-__declspec(dllexport) int libdatabase_init(lua_State *L) {
+int libdatabase_init(lua_State *L) {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
     char path[255];
@@ -202,7 +202,7 @@ void _update_callback(char *name, void *data)
     }
 }
 
-__declspec(dllexport) int libdatabase_insert(lua_State *L)
+int libdatabase_insert(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -236,7 +236,7 @@ __declspec(dllexport) int libdatabase_insert(lua_State *L)
     return 0;
 }
 
-__declspec(dllexport) int libdatabase_update(lua_State *L)
+int libdatabase_update(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -321,7 +321,7 @@ void _getFromUUID_callback(sqlite3_stmt *stmt, int i, int size, void *data)
     }
 }
 
-__declspec(dllexport) int libdatabase_getAll(lua_State *L)
+int libdatabase_getAll(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -342,7 +342,7 @@ __declspec(dllexport) int libdatabase_getAll(lua_State *L)
     return 1;
 }
 
-__declspec(dllexport) int libdatabase_getFromUUID(lua_State *L)
+int libdatabase_getFromUUID(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -364,7 +364,7 @@ __declspec(dllexport) int libdatabase_getFromUUID(lua_State *L)
     return 1;
 }
 
-__declspec(dllexport) int libdatabase_getFromID(lua_State *L)
+int libdatabase_getFromID(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -386,7 +386,7 @@ __declspec(dllexport) int libdatabase_getFromID(lua_State *L)
     return 1;
 }
 
-__declspec(dllexport) luaL_Reg libdatabase[] = {
+luaL_Reg libdatabase[] = {
     {"init", libdatabase_init},
     {"insert", libdatabase_insert},
     {"getAll", libdatabase_getAll},
@@ -396,7 +396,7 @@ __declspec(dllexport) luaL_Reg libdatabase[] = {
     {NULL, NULL}
 };
 
-__declspec(dllexport) int luaopen_extensions_libdatabase(lua_State *L)
+int luaopen_extensions_libdatabase(lua_State *L)
 {
     luaL_newlib(L, libdatabase);
     return 1;

@@ -2,7 +2,7 @@
 #include "./src/lua5.4/lauxlib.h"
 #include "./src/N2DE/N2DE.h"
 
-__declspec(dllexport) int libterminal_message(lua_State *L) 
+int libterminal_message(lua_State *L) 
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -11,7 +11,7 @@ __declspec(dllexport) int libterminal_message(lua_State *L)
     return 0;
 }
 
-__declspec(dllexport) int libterminal_close(lua_State *L) 
+int libterminal_close(lua_State *L) 
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -19,7 +19,7 @@ __declspec(dllexport) int libterminal_close(lua_State *L)
     return 0;
 }
 
-__declspec(dllexport) int libterminal_error(lua_State *L) 
+int libterminal_error(lua_State *L) 
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -28,7 +28,7 @@ __declspec(dllexport) int libterminal_error(lua_State *L)
     return 0;
 }
 
-__declspec(dllexport) int libterminal_quit(lua_State *L) 
+int libterminal_quit(lua_State *L) 
 {
     Nyquist2DEngine *engine = NULL;
     LUA_GETENGINE(L, engine);
@@ -37,7 +37,7 @@ __declspec(dllexport) int libterminal_quit(lua_State *L)
 }
 
 
-__declspec(dllexport) luaL_Reg libterminal[] = {
+luaL_Reg libterminal[] = {
     {"message", libterminal_message},
     {"error", libterminal_error},
     {"termclose", libterminal_close},
@@ -45,7 +45,7 @@ __declspec(dllexport) luaL_Reg libterminal[] = {
     {NULL, NULL}
 };
 
-__declspec(dllexport) int luaopen_extensions_libterminal(lua_State *L)
+int luaopen_extensions_libterminal(lua_State *L)
 {
     luaL_newlib(L, libterminal);
     return 1;
