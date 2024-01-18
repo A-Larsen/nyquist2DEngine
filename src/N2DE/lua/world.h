@@ -97,7 +97,15 @@ int luaWorld_addObject(lua_State *L)
     lua_pop(L, 1); // size
 
     lua_getfield(L, 2, "hitbox");
-    lua_torect(L, -1, &object.hitbox);
+    SDL_Rect r1;
+    lua_torect(L, -1, &r1);
+   SDL_Rect r2 = {
+        .x = r1.x / world->map.grid,
+        .y = r1.y / world->map.grid,
+        .w = r1.w / world->map.grid,
+        .h = r1.h / world->map.grid,
+    };
+    memcpy(&object.hitbox, &r2, sizeof(SDL_Rect));
     lua_pop(L, 1); // hitbox
 
 
