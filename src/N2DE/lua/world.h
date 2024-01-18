@@ -78,7 +78,47 @@ int luaWorld_addObject(lua_State *L)
     int num = (int)luaL_checknumber(L, 1);
     World *world = &engine->worlds[num];
     Object object;
-    /* object.crop_variation */
+    memset(&object, 0, sizeof(Object));
+
+    if (lua_istable(L, 2) == NULL) return 0;
+
+    lua_getfield(L, 2, "position");
+    lua_topoint(L, -1, &object.position);
+    lua_pop(L, 1); // position
+
+    lua_getfield(L, 2, "size");
+    lua_tosize(L, -1, &object.size);
+    lua_pop(L, 1); // size
+
+    lua_getfield(L, 2, "hitbox");
+    lua_torect(L, -1, &object.hitbox);
+    lua_pop(L, 1); // hitbox
+
+
+    lua_getfield(L, 2, "is_collidable");
+    object.is_collidable = lua_toboolean(L, -1);
+    lua_pop(L, 1); // is_collidable
+
+    lua_getfield(L, 2, "is_visable");
+    object.is_visable = lua_toboolean(L, -1);
+    lua_pop(L, 1); // is_visable
+
+    lua_getfield(L, 2, "crops");
+
+    if (lua_istable(L, -1)) {
+        printf("is a table\n");
+        int i = 0;
+        lua_pushnil(L);
+        while(lua_next(L, -2)) {
+            lua_torect(L, -1, &object.crops[i]);
+            lua_pop(L, 1);
+            i++;
+        }
+    }
+    lua_pop(L, 1); // crops
+                   //
+    world_addObject(world, &object);
+
     return 0;
 }
 
@@ -307,6 +347,7 @@ const struct luaL_Reg luaFunctions_world[] = {
     {"getObjects", luaWorld_getObjects},
     {"reset", luaWorld_reset},
     {"free", luaWorld_free},
+    {"addObject", luaWorld_addObject},
     /* {"isCollidable", luaWorld_isCollidable}, */
     {NULL, NULL}
 };

@@ -108,6 +108,27 @@ void lua_topoint(lua_State *L, int index, SDL_Point *p)
     }
 }
 
+void lua_torect(lua_State *L, int index, SDL_Rect *r)
+{
+    if (lua_istable(L, index)) {
+        lua_getfield(L, index, "x");
+        r->x = (int)lua_tonumber(L, -1);
+        lua_pop(L, 1);
+
+        lua_getfield(L, index, "y");
+        r->y = (int)lua_tonumber(L, -1);
+        lua_pop(L, 1);
+
+        lua_getfield(L, index, "w");
+        r->w = (int)lua_tonumber(L, -1);
+        lua_pop(L, 1);
+
+        lua_getfield(L, index, "h");
+        r->h = (int)lua_tonumber(L, -1);
+        lua_pop(L, 1);
+    }
+}
+
 void lua_tosize(lua_State *L, int index, Size *s)
 {
     if (lua_istable(L, index)) {
