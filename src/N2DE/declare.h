@@ -49,8 +49,8 @@ typedef struct _ScreenElement
     SDL_Texture *texture;
     SDL_Surface *surface;
     SDL_Rect position;
-    uint32_t rotation : 10; // degrees, 0 - 1023 only
-    bool filled : 1;
+    uint32_t rotation; // degrees, 0 - 1023 only
+    bool filled;
     union {
         char string[ELEMENT_STRING_SIZE];
         SDL_Rect rect;
@@ -64,8 +64,8 @@ typedef struct _ScreenElement
         } circle;
 
     }data;
-    uint8_t zIndex : 4;
-    uint8_t type : 3;
+    uint8_t zIndex;
+    uint8_t type;
     SDL_Color color;
 } ScreenElement;
 

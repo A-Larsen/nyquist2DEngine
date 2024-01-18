@@ -70,6 +70,18 @@ int luaWorld_init(lua_State *L)
     return 0;
 }
 
+int luaWorld_addObject(lua_State *L)
+{
+    Nyquist2DEngine *engine = NULL;
+    LUA_GETENGINE(L, engine);
+
+    int num = (int)luaL_checknumber(L, 1);
+    World *world = &engine->worlds[num];
+    Object object;
+    /* object.crop_variation */
+    return 0;
+}
+
 int luaWorld_getObjects(lua_State *L)
 {
     Nyquist2DEngine *engine = NULL;

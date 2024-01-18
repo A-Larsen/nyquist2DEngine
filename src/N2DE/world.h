@@ -38,39 +38,24 @@
 
 #define CROP_VARIATION_COUNT 4
 
-#if defined(_WIN32)
-#pragma pack(push, 1)
 typedef struct _Object
-#elif defined(__GNUC__)
-typedef struct __attribute__((__packed__)) _Object
-#endif
 {
     SDL_Point position;
     SDL_Rect hitbox;
     Size size;
     SDL_Rect crops[CROP_VARIATION_COUNT];
     uint16_t crop_id;
-    uint8_t crop_variation: 2;
+    uint8_t crop_variation;
     char type[25];
-    bool is_collidable : 1;
-    bool is_visable : 1;
-    bool wasCollected : 1;
-    uint16_t rotation : 9; // degrees 0 - 511 only
+    bool is_collidable;
+    bool is_visable;
+    bool wasCollected;
+    uint16_t rotation; // degrees 0 - 511 only
 }
 Object;
-#if defined(_WIN32)
-#pragma pack(pop)
-#endif
 
 
-
-#if  defined(_WIN32)
-#pragma pack(push, 1)
 typedef struct _Map
-#elif defined(__GNUC__)
-typedef struct __attribute__((__packed__)) _Map
-#endif
-
 {
     uint16_t objects_count;
     char background_path[500];
@@ -79,10 +64,6 @@ typedef struct __attribute__((__packed__)) _Map
     Size size;
 }
 Map;
-#if defined(_WIN32)
-#pragma pack(pop)
-#endif
-
 
 extern bool WORLD_UPDATE[9];
 extern float WORLD_SCALE[9];
