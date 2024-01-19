@@ -518,6 +518,37 @@ uint16_t world_addObject(World *world, Object *object)
     return i;
 }
 
+uint16_t world_newObject(World *world, uint16_t id, Object *object, uint8_t zIndex, Sprites *sprites, SDL_Renderer *renderer)
+{
+        int i = world_addObject(world, object);
+
+        world->objects[i].crop_id = \ 
+            sprites_addCrops(sprites, renderer, world->spritesheet_id, world->objects[i].type,
+                             world->objects[i].crops, CROP_VARIATION_COUNT, zIndex);
+        SDL_Rect back = {
+            object->crops[0].x,
+            object->crops[0].y,
+            object->crops[0].w,
+            object->crops[0].h,
+        };
+        SDL_Rect front = {
+            object->crops[0].x,
+            object->crops[0].y,
+            object->crops[0].w,
+            object->hitbox.y,
+        };
+        if (!SDL_RectEquals(&front, &back) && object->is_visable) {
+            uint16_t j = world->front_objects_count++;
+            MEMRES(world->front_objects, sizeof(FrontObject) * world->front_objects_count);
+            world->front_objects[j].crop_id = sprites_addCrops(sprites, renderer, 
+                    world->spritesheet_id, object->type, &front,
+                    1, zIndex + 2);
+            world->front_objects[j].object_id = i;
+            memcpy(&world->front_objects[j].rect, &front, sizeof(SDL_Rect));
+        }
+    return i;
+}
+
 void world_changeObject(World *world, uint16_t id, Object *object)
 {
     memcpy(&world->objects[id], object, sizeof(Object));
