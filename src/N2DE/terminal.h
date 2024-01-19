@@ -369,15 +369,15 @@ void terminal_updateKeys(Terminal *term, lua_State *L, KeyInfo *keyinfo)
                 else if (key == SDLK_TAB) {
                     // get Global variable "_G" and use tab to find the
                     // most close variable
-                    lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
-                    lua_pushnil(L);
-                    while(lua_next(L, -2) != 0) {
-                        char *key = (char *)lua_tostring(L, -2);
-                        int len = strlen(key);
-                        printf("%s\n", key);
-                        lua_pop(L, 1);
+                    /* lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS); */
+                    /* lua_pushnil(L); */
+                    /* while(lua_next(L, -2) != 0) { */
+                    /*     char *key = (char *)lua_tostring(L, -2); */
+                    /*     int len = strlen(key); */
+                    /*     printf("%s\n", key); */
+                    /*     lua_pop(L, 1); */
 
-                    }
+                    /* } */
                 }
             }
 
@@ -408,43 +408,12 @@ void terminal_update(Terminal *term, lua_State *L, SDL_Renderer *renderer,
 
     if (term->execute) {
         char out[255];
-        bool isLuaString = checkIfLuaString(term->command);
         sprintf(out, "> %s", term->command);
         terminal_addMessage(term, out, TERM_MSGCMD);
 
-        lua_getglobal(L, "terminal");
-
         int doStringError = false;
-        if (isLuaString) {
-            char *cmd = term->command + 4;
-            doStringError = luaL_dostring(L, cmd);
 
-        } else if (lua_type(L, -1) == LUA_TTABLE) {
-            lua_getfield(L, -1, "commands");
-            if (lua_type(L, -1) == LUA_TTABLE) {
-                lua_pushnil(L);
-                bool found = false;
-                while(lua_next(L, -2)) {
-                    char *name = (char *)luaL_checkstring(L, -2);
-                    lua_pop(L, 1);
-
-                    /* printf("isLuaString: %d\n", isLuaString); */
-                    if (strstr(term->command, name) == term->command) {
-                        char cmd[512];
-                        sprintf(cmd, "terminal.commands.%s", term->command);
-                        found = true;
-                        doStringError = luaL_dostring(L, cmd);
-                    }  
-                }
-                if (!found) {
-                    terminal_addMessage(term, "not a command", TERM_MSGERROR);
-                }
-            }
-        }
-
-        /* int doStringError = true; */
-
-        if (doStringError) {
+        if (luaL_dostring(L, term->command)) {
             char *msg = (char *)lua_tostring(L, -1);
             terminal_addMessage(term, msg, TERM_MSGERROR);
         } else {
