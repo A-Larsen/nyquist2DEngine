@@ -27,7 +27,7 @@ typedef struct _SDLData {
     SDL_Rect rect;
     SDL_Renderer *renderer;
     SDL_Window *window;
-    SDL_Surface *window_surface;
+    /* SDL_Surface *window_surface; */
     Size size;
     uint8_t scale;
 } SDLData;
@@ -50,7 +50,7 @@ void sdl_init(SDLData *data, Size *size, uint8_t scale)
         N2DE_ERROR("could not creat a window\n%s", SDL_GetError());
     }
 
-    data->window_surface = SDL_GetWindowSurface(data->window);
+    /* data->window_surface = SDL_GetWindowSurface(data->window); */
 
 
     data->renderer = SDL_CreateRenderer(data->window, -1,\
