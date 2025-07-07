@@ -43,6 +43,8 @@
 
 #define SDL_main main
 
+// Yes I know this is ugly and i could have initialized this with something like memset. 
+/// I was just using this to mess around with values. Also, yes I know I could've used a debugger like gdb to do this 
 bool WORLD_UPDATE[9] = {
     [0] = true, 
     [1] = false, 
